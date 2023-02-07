@@ -151,12 +151,9 @@
 						</div>
 						<div id="input_fields_wrap_cek_fisik">
 							<div class="form-group">
-								<div class="col-sm-2"><input type="text" name="cek_fisik[]" class="form-control"></div>
-								<div class="col-sm-4">
-									<input type="text" name="cek_fisik_value[]" class="form-control">
-								</div>
-								<div class="col-sm-2"><input type="text" name="cek_fisik[]" class="form-control"></div>
-								<div class="col-sm-4">
+                                <div class="col-sm-2">Cek Fisik</div>
+								<div class="col-sm-4"><input type="text" name="cek_fisik[]" class="form-control"></div>
+								<div class="col-sm-6">
 									<input type="text" name="cek_fisik_value[]" class="form-control">
 								</div>
 							</div>
@@ -962,7 +959,7 @@ $(document).ready(function() {
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(wrapper_cek_fisik).append('<div class="form-group"><div class="col-sm-2"><input type="text" name="cek_fisik[]" class="form-control"></div><div class="col-sm-4"><input type="text" name="cek_fisik_value[]" class="form-control"></div><div class="col-sm-2"><input type="text" name="cek_fisik[]" class="form-control"></div><div class="col-sm-4"><div class="input-group"><input type="text" name="cek_fisik_value[]" class="form-control"><span class="input-group-addon"><a href="#" class="remove_field_cek_fisik">X</a></span></div></div></div>'); //add input box
+            $(wrapper_cek_fisik).append('<div class="form-group"><div class="col-sm-2"></div><div class="col-sm-4"><input type="text" name="cek_fisik[]" class="form-control"></div><div class="col-sm-6"><div class="input-group"><input type="text" name="cek_fisik_value[]" class="form-control"><span class="input-group-addon"><a href="#" class="remove_field_cek_fisik">X</a></span></div></div></div>'); //add input box
         }
     });
     

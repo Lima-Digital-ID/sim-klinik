@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 // $config['base_url'] = 'https://www.primtech.co.id/demo/si-klinik';
-$config['base_url'] = 'https://primtech-sistem.com/sim-klinik/demo';
+$config['base_url'] = 'http://localhost:8001/sim-klinik/demo/';
 
 /*
 |--------------------------------------------------------------------------

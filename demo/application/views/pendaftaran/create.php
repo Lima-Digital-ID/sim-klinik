@@ -36,15 +36,16 @@
                         <div class="form-group">
                             <div class="col-sm-4">No Rekam Medis <?php echo form_error('no_rekam_medis'); ?></div>
                             <div class="col-sm-8">
-                                <?php echo form_input(array('id'=>'no_rekam_medis','name'=>'no_rekam_medis','type'=>'text','value'=>$no_rekam_medis,'class'=>'form-control','readonly'=>'readonly'));?>
+                                <?php echo form_input(array('id'=>'no_rekam_medis','name'=>'no_rekam_medis','type'=>'text','value'=>$no_rekam_medis_default,'class'=>'form-control','readonly'=>'readonly'));?>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <div class="col-sm-4">No ID <?php echo form_error('no_id'); ?></div>
                             <div class="col-sm-8">
                                 <?php echo form_input(array('id'=>'no_id','name'=>'no_id','type'=>'text','value'=>$no_id,'class'=>'form-control','onkeyup'=>'autocomplate_no_id()'));?>
                             </div>
-                        </div>
+                        </div> -->
+                        <input type="hidden" name="no_id">
                         <div class="form-group">
                             <div class="col-sm-4">Nik <?php echo form_error('nik'); ?></div>
                             <div class="col-sm-8">
@@ -66,7 +67,7 @@
                         <div class="form-group">
                             <div class="col-sm-4">Golongan Darah <?php echo form_error('golongan_darah'); ?></div>
                             <div class="col-sm-8">
-                                <?php echo form_dropdown('golongan_darah', array(''=>'Pilih Golongan Darah','A'=>'A','B'=>'B','AB'=>'AB','O'=>'O'),$golongan_darah,array('id'=>'golongan_darah','class'=>'form-control'));?>
+                                <?php echo form_dropdown('golongan_darah', array(''=>'Pilih Golongan Darah','-'=>'-','A'=>'A','B'=>'B','AB'=>'AB','O'=>'O'),$golongan_darah,array('id'=>'golongan_darah','class'=>'form-control'));?>
                             </div>
                         </div>
                         <div class="form-group">
@@ -142,7 +143,7 @@
                                 <?php echo form_input(array('id'=>'nomor_telepon','name'=>'nomor_telepon','type'=>'text','value'=>$nomor_telepon,'class'=>'form-control'));?>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <div class="col-sm-4">Tipe Pemeriksaan</div>
                             <div class="col-sm-8">
                                 <select name="tipe_periksa" id="tipe_dokter_umum" class="form-control">
@@ -156,7 +157,7 @@
                                     <option value="4">Pemeriksaan Gigi</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- <div class="form-group" id="jasa_lainnya" style="display:none">
                             <div class="col-sm-4">Jasa Lainnya</div>
                             <div class="col-sm-8">

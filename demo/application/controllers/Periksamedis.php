@@ -437,18 +437,18 @@ class Periksamedis extends CI_Controller
             $this->template->load('template','rekam_medis/form_rekam_medis', $this->data);
     
         }
-        else if($data_pendaftaran->tipe_periksa=='2'){
-            redirect(base_url()."periksamedis/imunisasi");
-        }
-        else if($data_pendaftaran->tipe_periksa=='3'){
-            redirect(base_url()."periksamedis/kontrol_kehamilan");
-        }
-        else if($data_pendaftaran->tipe_periksa=='5'){
-            redirect(site_url('periksamedis/periksa_jasa/'));
-        }
-        else if($data_pendaftaran->tipe_periksa=='6'){
-            redirect(site_url('periksamedis/periksa_lab/'));
-        }
+        // else if($data_pendaftaran->tipe_periksa=='2'){
+        //     redirect(base_url()."periksamedis/imunisasi");
+        // }
+        // else if($data_pendaftaran->tipe_periksa=='3'){
+        //     redirect(base_url()."periksamedis/kontrol_kehamilan");
+        // }
+        // else if($data_pendaftaran->tipe_periksa=='5'){
+        //     redirect(site_url('periksamedis/periksa_jasa/'));
+        // }
+        // else if($data_pendaftaran->tipe_periksa=='6'){
+        //     redirect(site_url('periksamedis/periksa_lab/'));
+        // }
     }
     public function addICD()
     {

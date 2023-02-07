@@ -58,7 +58,7 @@ class Pendaftaran extends CI_Controller
 				'no_rekam_medis' => $this->input->post('no_rekam_medis'),
 				'id_dokter' => $this->input->post('nama_dokter'),
 				'id_klinik' => $this->id_klinik,
-				'tipe_periksa' => $this->input->post('tipe_periksa'),
+				'tipe_periksa' => 1,
 	        );
 
 			$row = $this->Tbl_pasien_model->get_by_id($this->input->post('no_rekam_medis'));
@@ -276,7 +276,7 @@ class Pendaftaran extends CI_Controller
     public function _rules() 
     {
         $this->form_validation->set_rules('no_rekam_medis', 'No Rekam Medis', 'trim|required');
-    	$this->form_validation->set_rules('no_id', 'No ID Pasien', 'trim|required');
+    	// $this->form_validation->set_rules('no_id', 'No ID Pasien', 'trim|required');
     	$this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'trim|required');
     	$this->form_validation->set_rules('nik', 'NIK', 'trim|required');
     	$this->form_validation->set_rules('tanggal_lahir', 'Tanggal Lahir', 'trim|required');
@@ -345,7 +345,7 @@ class Pendaftaran extends CI_Controller
 				'no_rekam_medis' => $this->input->post('no_rekam_medis'),
 				'id_dokter' => $this->input->post('nama_dokter'),
 				'id_klinik' => $this->id_klinik,
-				'tipe_periksa' => $this->input->post('tipe_periksa'),
+				'tipe_periksa' => 1,
 	        );
 
 			$row = $this->Tbl_pasien_model->get_by_id($this->input->post('no_rekam_medis'));
@@ -487,26 +487,26 @@ class Pendaftaran extends CI_Controller
         $nourutpendaftaran = substr($daridbpendaftaran, 3);
         $noPendaftaranSekarang = str_pad($nourutpendaftaran+1, 6, 0, STR_PAD_LEFT);
         
-        switch ($this->input->post('tipe_periksa')){
-            case "Periksa Medis":
-                $tipe_periksa = "1";
-                break;
-            case "Imunisasi Anak":
-                $tipe_periksa = "2";
-                break;
-            case "Kontrol Kehamilan":
-                $tipe_periksa = "3";
-                break;
-            case "Periksa Gigi":
-                $tipe_periksa = "4";
-                break;
-            case "Periksa Jasa":
-                $tipe_periksa = "5";
-                break;
-            case "Periksa Lab":
-                $tipe_periksa = "6";
-                break;
-        }
+        // switch ($this->input->post('tipe_periksa')){
+        //     case "Periksa Medis":
+        //         $tipe_periksa = "1";
+        //         break;
+        //     case "Imunisasi Anak":
+        //         $tipe_periksa = "2";
+        //         break;
+        //     case "Kontrol Kehamilan":
+        //         $tipe_periksa = "3";
+        //         break;
+        //     case "Periksa Gigi":
+        //         $tipe_periksa = "4";
+        //         break;
+        //     case "Periksa Jasa":
+        //         $tipe_periksa = "5";
+        //         break;
+        //     case "Periksa Lab":
+        //         $tipe_periksa = "6";
+        //         break;
+        // }
         if($this->input->post('is_pasien') == ''){
             $data_pasien = array(
                 'no_rekam_medis'    => $noRekamMedisSekarang,
@@ -529,7 +529,8 @@ class Pendaftaran extends CI_Controller
                 'no_rekam_medis' => $noRekamMedisSekarang,
                 'id_dokter' => $this->input->post('id_dokter'),
                 'id_klinik' => $this->id_klinik,
-                'tipe_periksa' => $tipe_periksa,
+                'tipe_periksa' => 1,
+                // 'tipe_periksa' => $tipe_periksa,
             );
             $this->Pendaftaran_model->insert($data_pendaftaran);
             $this->Tbl_pasien_model->insert($data_pasien);
@@ -539,7 +540,8 @@ class Pendaftaran extends CI_Controller
                 'no_rekam_medis' => $this->input->post('no_rekam_medis'),
                 'id_dokter' => $this->input->post('id_dokter'),
                 'id_klinik' => $this->id_klinik,
-                'tipe_periksa' => $tipe_periksa,
+                'tipe_periksa' => 1,
+                // 'tipe_periksa' => $tipe_periksa,
             );
             $this->Pendaftaran_model->insert($data_pendaftaran);
         }

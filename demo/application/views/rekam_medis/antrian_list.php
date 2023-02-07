@@ -33,10 +33,10 @@
                         </div>
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#medis">Periksa Medis</a></li>
-                            <li><a data-toggle="tab" href="#anak">Imunisasi Anak</a></li>
+                            <!-- <li><a data-toggle="tab" href="#anak">Imunisasi Anak</a></li>
                             <li><a data-toggle="tab" href="#hamil">Kontrol Kehamilan</a></li>
                             <li><a data-toggle="tab" href="#jasa">Jasa Lainnya</a></li>
-                            <li><a data-toggle="tab" href="#lab">Periksa LAB</a></li>
+                            <li><a data-toggle="tab" href="#lab">Periksa LAB</a></li> -->
                         </ul>
                         <br>
                         <div class="tab-content">
