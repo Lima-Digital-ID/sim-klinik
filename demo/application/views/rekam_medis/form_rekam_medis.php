@@ -115,12 +115,28 @@
                                 <?php echo form_textarea(array('id'=>'anamnesi','name'=>'anamnesi','type'=>'textarea','value'=>'','rows'=>'4','class'=>'form-control'));?>
                             </div>
 						</div>
+                        <div id="input_fields_wrap_cek_fisik">
+							<div class="form-group">
+                                <div class="col-sm-2">Cek Fisik</div>
+								<div class="col-sm-4"><input type="text" name="cek_fisik[]" class="form-control"></div>
+								<div class="col-sm-6">
+									<input type="text" name="cek_fisik_value[]" class="form-control">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<div align="right">
+									<button id="add_field_button_cek_fisik"><i class="fa fa-plus"></i>Tambah</button>
+								</div>
+							</div>
+						</div>
 						<div class="form-group">
 							<div class="col-sm-2">Riwayat Alergi Obat <?php echo form_error('riwayat_alergi_obat'); ?></div>
 							<div class="col-sm-10">
                                 <?php
                                     if(isset($riwayat_alergi_obat)) {
-                                        echo form_textarea(array('id'=>'riwayat_alergi_obat','name'=>'riwayat_alergi_obat','type'=>'textarea','value'=>$riwayat_alergi_obat,'rows'=>'4','class'=>'form-control','onchange'=>'riwayat_alergi()'));
+                                        echo form_textarea(array('id'=>'riwayat_alergi_obat','name'=>'riwayat_alergi_obat','type'=>'textarea','value'=>$riwayat_alergi_obat,'rows'=>'2','class'=>'form-control','onchange'=>'riwayat_alergi()'));
                                     }
                                     else {
                                         echo form_textarea(array('id'=>'riwayat_alergi_obat','name'=>'riwayat_alergi_obat','type'=>'textarea','value'=>'','rows'=>'4','class'=>'form-control','onchange'=>'riwayat_alergi()'));
@@ -148,22 +164,6 @@
 							<div class="col-sm-4">
                                 <?php echo form_input(array('id'=>'suhu_tubuh','name'=>'suhu_tubuh','type'=>'text','value'=>'','class'=>'form-control'));?>
                             </div>
-						</div>
-						<div id="input_fields_wrap_cek_fisik">
-							<div class="form-group">
-                                <div class="col-sm-2">Cek Fisik</div>
-								<div class="col-sm-4"><input type="text" name="cek_fisik[]" class="form-control"></div>
-								<div class="col-sm-6">
-									<input type="text" name="cek_fisik_value[]" class="form-control">
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-12">
-								<div align="right">
-									<button id="add_field_button_cek_fisik"><i class="fa fa-plus"></i>Tambah</button>
-								</div>
-							</div>
 						</div>
 						<hr />
 						<!--
