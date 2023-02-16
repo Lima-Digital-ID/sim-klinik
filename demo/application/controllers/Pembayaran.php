@@ -288,6 +288,7 @@ class Pembayaran extends CI_Controller
             $this->data['tgl_transaksi'] = $data_transaksi->tgl_transaksi;
             $this->data['status_transaksi'] = $data_transaksi->status_transaksi;
             $this->data['total_transaksi'] = 0;
+            // $this->data['surat'] = $data;
             $this->data['bank'] = $this->Tbl_akun_model->get_all_bank();
             $this->data['transaksi_d'] = $this->Transaksi_model->get_detail_by_h_id($data_transaksi->no_transaksi); //Ini array
             

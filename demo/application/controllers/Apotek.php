@@ -388,4 +388,13 @@ class Apotek extends CI_Controller
         $data['petugas']=$this->session->userdata('full_name');
         $this->load->view('apotek/cetak_struk', $data);
     }
+    public function cetak_struk_apotek(){
+        $id = $_GET['id'];
+        $data_periksa_d_obat = $this->Periksa_model->get_d_obat_by_id($id);
+        $periksa = $this->Periksa_model->get_by_id($id);
+        $pasien = $this->Tbl_pasien_model->get_by_id($periksa->no_rekam_medis);
+        $this->data['periksa_d_obat'] = $data_periksa_d_obat;
+        $this->data['nama_pasien'] = $pasien->nama_lengkap;
+        $this->load->view('apotek/cetak_struk_apotek',$this->data);
+    }
 }
