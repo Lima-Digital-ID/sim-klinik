@@ -158,6 +158,8 @@
                             <div class="col-sm-12">
                                 <div align="right">
                                     <button id="bayar" type="submit" class="btn btn-danger" onclick="tab1Show();"><i class="fa  fa-dollar"></i> Bayar Sekarang</button>
+                                    <a href="<?= site_url('periksamedis/cetak_surat_ket_sakit?id=' . $no_transaksi)?>" class="btn btn-success
+                                    " target="_blank"><i class="fa fa-envelope"></i>  Cetak Surat Keterangan Sakit</a>
                                     <script type="text/javascript">
                                         // function tab1Show()
                                         // {

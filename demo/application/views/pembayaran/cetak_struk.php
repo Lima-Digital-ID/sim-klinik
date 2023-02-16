@@ -35,9 +35,9 @@
 </head>
 <body>
   <center>
-    <p style="margin-bottom:0px;margin-top:0px">NADA FARMA</p>
-    <p style="margin-bottom:0px;margin-top:0px">Jln Raya Padonan 108, Tibuneneng</p>
-    <p style="margin-bottom:0px;margin-top:0px">Kuta Utara</p>
+    <p style="margin-bottom:0px;margin-top:0px">KLINIK-AGAIN</p>
+    <p style="margin-bottom:0px;margin-top:0px">Jln </p>
+    <p style="margin-bottom:0px;margin-top:0px">Kabupaten</p>
     -------------------------------------------
     <?php echo $transaksi[0]->no_transaksi;?>
     <br>        

@@ -35,12 +35,14 @@
                             <thead>
                                 <tr>
                                     <th width="30px">No</th>
-                                    <th>No Periksa</th>
-                                    <th>No Rekam Medis</th>
-                                    <th>Nama Pasien</th>
-                                    <!--<th>Klinik</th>-->
-                                    <!--<th>Nama Dokter</th>-->
-                                    <!--<th>Diagnosa</th>-->
+                                    <!-- <th>No Periksa</th> -->
+                                    <!-- <th>No Rekam Medis</th> -->
+                                    <!-- <th>Nama Pasien</th> -->
+                                    <th>Tanggal</th>
+                                    <th>Diagnosa</th>
+                                    <th>Obat</th>
+                                    <th>Dokter</th>
+                                    <th>Nama Klinik</th>
                                     <!--<th>Tgl Periksa</th>-->
                                     <!--<th>Status</th>-->
                                     <th>Action</th>
@@ -94,7 +96,18 @@
                 {
                     "data": "no_rekam_medis",
                     "orderable": false
-                },{"data": "no_periksa"},{"data": "no_rekam_medis"},{"data": "nama_pasien"},
+                },{
+                    "data": "tgl_periksa"
+                },{
+                    "data": "diagnosa"
+                },{
+                    "data": "obat_detail"
+                },{
+                    "data": "nama_dokter"
+                },
+                {
+                    "data": "klinik"
+                },
                 {
                     "data" : "action",
                     "orderable": false,

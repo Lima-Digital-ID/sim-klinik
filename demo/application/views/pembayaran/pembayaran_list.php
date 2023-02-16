@@ -25,12 +25,12 @@
                         </div>
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#menu1">Pemeriksaan</a></li>
-                            <li><a data-toggle="tab" href="#menu2">Surat Keterangan Sehat</a></li>
+                            <!-- <li><a data-toggle="tab" href="#menu2">Surat Keterangan Sehat</a></li>
                             <li><a data-toggle="tab" href="#menu3">Rapid Antigen</a></li>
                             <li><a data-toggle="tab" href="#anak">Imunisasi Anak</a></li>
                             <li><a data-toggle="tab" href="#hamil">Kontrol Kehamilan</a></li>
                             <li><a data-toggle="tab" href="#jasa">Jasa Lainnya</a></li>
-                            <li><a data-toggle="tab" href="#lab">Periksa LAB</a></li>
+                            <li><a data-toggle="tab" href="#lab">Periksa LAB</a></li> -->
                         </ul>
                         <br>
                         <div class="tab-content">
@@ -166,12 +166,12 @@
                         </div>
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#list1">Pemeriksaan</a></li>
-                            <li><a data-toggle="tab" href="#list2">Surat Keterangan Sehat</a></li>
+                            <!-- <li><a data-toggle="tab" href="#list2">Surat Keterangan Sehat</a></li>
                             <li><a data-toggle="tab" href="#list3">Rapid Antigen</a></li>
                             <li><a data-toggle="tab" href="#listAnak">Imunisasi Anak</a></li>
                             <li><a data-toggle="tab" href="#listHamil">Kontrol Kehamilan</a></li>
                             <li><a data-toggle="tab" href="#listJasa">Jasa Lainnya</a></li>
-                            <li><a data-toggle="tab" href="#listLab">Periksa LAB</a></li>
+                            <li><a data-toggle="tab" href="#listLab">Periksa LAB</a></li> -->
 
                         </ul>
                         <br>
