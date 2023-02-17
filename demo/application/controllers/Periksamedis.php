@@ -433,6 +433,7 @@ class Periksamedis extends CI_Controller
                 }
             } 
             $this->data['nomor_skt'] = sprintf("%04s",$nomor);
+            $this->data['cek_fisik'] = $this->Periksa_model->get_cek_fisik();
 
             $this->template->load('template','rekam_medis/form_rekam_medis', $this->data);
     
@@ -449,6 +450,73 @@ class Periksamedis extends CI_Controller
         // else if($data_pendaftaran->tipe_periksa=='6'){
         //     redirect(site_url('periksamedis/periksa_lab/'));
         // }
+    }
+    public function edit()
+    {
+        $id = $_GET['id'];
+        $pasien = $this->Periksa_model->get_edit($id);
+        $data_pasien = $this->Tbl_pasien_model->get_by_id($pasien->no_rekam_medis);
+        $this->data['no_periksa'] = $pasien->no_periksa;
+        if(isset($data_pasien)) {
+            $this->data['nama_lengkap'] = $data_pasien->nama_lengkap;
+            $this->data['alamat'] = $data_pasien->alamat.' '.$data_pasien->kabupaten.' '.'RT '.$data_pasien->rt.' '.'RW '.$data_pasien->rw;
+            $this->data['riwayat_alergi_obat'] = $data_pasien->riwayat_alergi_obat;
+            $this->data['no_pendaftaran'] = $pasien->no_pendaftaran;
+        }
+        $this->data['anamnesies'] = $this->get_master_ref($this->master_ref_code_anamnesi);
+        $this->data['alergi_obat'] = $this->get_master_ref($this->master_ref_code_alergiobat);
+        $this->data['diagnosa'] = $this->get_master_ref($this->master_ref_code_diagnosa);
+        $this->data['tindakan'] = $this->get_master_ref($this->master_ref_code_tindakan);
+        $this->data['alkes_option'] = array();
+        $this->data['alkes_option'][''] = 'Pilih Alat Kesehatan';
+        $alkes_opt_js = array();
+        foreach ($this->Tbl_obat_alkes_bhp_model->get_all_alkes($this->id_klinik) as $alkes){
+            $this->data['alkes_option'][$alkes->kode_barang] = $alkes->nama_barang;
+            $alkes_opt_js[] = array(
+                'value' => $alkes->kode_barang,
+                'label' => $alkes->nama_barang
+            );
+        }
+        $this->data['alkes_option_js'] = json_encode($alkes_opt_js);
+        
+        $this->data['obat_option'] = array();
+        $this->data['obat_option'][''] = 'Pilih Obat';
+        $obat_opt_js = array();
+        foreach ($this->Tbl_obat_alkes_bhp_model->get_all_obat($this->id_klinik) as $obat){
+            $this->data['obat_option'][$obat->kode_barang] = $obat->nama_barang;
+            $obat_opt_js[] = array(
+                'value' => $obat->kode_barang,
+                'label' => $obat->nama_barang
+            );
+        }
+        $this->data['obat_option_js'] = json_encode($obat_opt_js);
+        
+        $this->data['anjuran_obat'] = $this->get_master_ref($this->master_ref_code_anjuranobat);
+        
+        $this->data['alkes'] = $this->get_all_alkes();
+        $this->data['obat'] = $this->get_all_obat();
+
+        $this->data['diagnosa_icd10'] = $this->Tbl_diagnosa_icd10_model->getAll();
+        $tipeTindakan = '1';
+        $this->data['master_tindakan'] = $this->db->query('select * from tbl_tindakan where tipe = "'.$tipeTindakan.'" order by cast(kode_tindakan as SIGNED INTEGER) asc ')->result();
+        
+        //Set session error
+        if($this->input->post('no_periksa')){
+            $this->session->set_flashdata('message', 'Terdapat error input, silahkan cek ulang');
+            $this->session->set_flashdata('message_type', 'danger');
+        }
+        $nomor = 1;
+        $getLastNomorSK = $this->Periksa_model->getLastNomor();
+        if(count($getLastNomorSK)>0){
+            $getNomor = explode('/',$getLastNomorSK[0]->nomor_skt);
+            if(count($getNomor)==5){
+                $nomor = (int)$getNomor[0]+1;
+            }
+        } 
+        $this->data['nomor_skt'] = sprintf("%04s",$nomor);
+        $this->data['cek_fisik'] = $this->Periksa_model->get_cek_fisik();
+
+        $this->template->load('template','rekam_medis/edit_rekam_medis', $this->data);
     }
     public function addICD()
     {
@@ -1441,6 +1509,14 @@ class Periksamedis extends CI_Controller
         
         header('Content-Type: application/json');
         echo $this->Periksa_model->json($data_pendaftaran->no_rekam_medis);
+    }
+
+    public function edit_json_by_id($id){
+        $data_pendaftaran = $this->Pendaftaran_model->get_by_id($id);
+        
+        header('Content-Type: application/json');
+        echo $data_pendaftaran;
+        // echo $this->Periksa_model->json($data_pendaftaran->no_rekam_medis);
     }
     
     public function json_antrian($tipe=1){

@@ -147,7 +147,9 @@ class Periksa_model extends CI_Model
         $this->datatables->join('tbl_pendaftaran pd','p.no_pendaftaran = pd.no_pendaftaran','left');
         $this->datatables->join('tbl_klinik k','pd.id_klinik = k.id_klinik','left');
         $this->datatables->join('tbl_dokter d','p.id_dokter = d.id_dokter','left');
-        $this->datatables->add_column('action',anchor(site_url('periksamedis/riwayat_detail/$1'),'<i class="fa fa-money"></i>', array('class' => 'btn waves-effect waves-light btn-xs btn-success')),'no_rekam_medis');
+        // $this->datatables->add_column('action',anchor(site_url('periksamedis/riwayat_detail/$1'),'View', array('class' => 'btn waves-effect waves-light btn-xs btn-success')),'no_rekam_medis');
+        $this->datatables->add_column('action', 
+        anchor(site_url('periksamedis/edit?id=$2'),'Edit', array('class' => 'btn btn-warning btn-sm'))." ".anchor(site_url('periksamedis/riwayat_detail/$1'),'View','class="btn btn-info btn-sm"')." ".anchor(site_url('periksamedis/riwayat_detail/$1'),'Print','class="btn btn-success btn-sm"'), 'no_rekam_medis,no_periksa');
         if($id_dokter != 0){
             $this->datatables->where('p.id_dokter',$id_dokter);
         }
@@ -170,4 +172,19 @@ class Periksa_model extends CI_Model
         return $this->datatables->generate();
     }
     
+    function get_cek_fisik()
+    {
+        $this->db->select('*');
+        $this->db->from('tbl_cek_fisik');
+        return $this->db->get()->result();
+    }
+
+    function get_edit($id)
+    {
+        $this->db->select('tbl_periksa.*, tbl_pasien.nama_lengkap, tbl_pasien.alamat, tbl_pasien.kabupaten, tbl_pasien.rt, tbl_pasien.rw');
+        $this->datatables->from('tbl_periksa');
+        $this->datatables->join('tbl_pasien','tbl_periksa.no_rekam_medis=tbl_pasien.no_rekam_medis','left');
+        $this->db->where('tbl_periksa.no_periksa', $id);
+        return $this->db->get($this->table)->row();
+    }
 }
