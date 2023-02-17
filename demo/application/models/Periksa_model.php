@@ -41,6 +41,7 @@ class Periksa_model extends CI_Model
     function get_d_obat_by_id($id)
     {
         $this->db->select('*');
+        // $this->db->select('tbl_periksa_d_obat.*, tbl_obat_alkes_bhp.nama_barang');
         $this->db->from('tbl_periksa_d_obat');
         $this->db->join('tbl_obat_alkes_bhp', 'tbl_periksa_d_obat.kode_barang = tbl_obat_alkes_bhp.kode_barang');
         $this->db->where($this->id, $id);

@@ -147,7 +147,7 @@ foreach($periksa_d_obat as $data){
 							<div class="col-sm-12">
 								<div align="right">
 									<button type="submit" class="btn btn-success"><i class="fa fa-medkit"></i> Ambil Obat Sekarang</button> 
-                                    <a href="<?= site_url('periksamedis/cetak_surat_ket_sakit?id=')?>" class="btn btn-info
+                                    <a href="<?= site_url('apotek/cetak_struk_apotek?id=').$no_periksa?>" class="btn btn-info
                                     " target="_blank"><i class="fa fa-envelope"></i>  Print</a>
 								</div>
 							</div>
