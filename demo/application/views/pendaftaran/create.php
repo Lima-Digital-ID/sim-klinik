@@ -49,7 +49,7 @@
                         <div class="form-group">
                             <div class="col-sm-4">Nik <?php echo form_error('nik'); ?></div>
                             <div class="col-sm-8">
-                                <?php echo form_input(array('id'=>'nik','name'=>'nik','type'=>'text','value'=>$nik,'class'=>'form-control'));?>
+                                <?php echo form_input(array('id'=>'nik','name'=>'nik','type'=>'text','value'=>$nik,'class'=>'form-control', 'onkeyup'=>'autocomplate_no_id()'));?>
                             </div>
                         </div>
                         <div class="form-group">
@@ -73,11 +73,12 @@
                         <div class="form-group">
                             <div class="col-sm-4">Jenis Kelamin <?php echo form_error('jenis_kelamin'); ?></div>
                             <div class="col-sm-8">
-                                <select name="jenis_kelamin" class="form-control" id="">
+                                <!-- <select name="jenis_kelamin" class="form-control" id="jenis_kelamin">
                                     <option value="">Pilih Jenis Kelamin</option>
                                     <option value="L">Laki Laki</option>
                                     <option value="P">Perempuan</option>
-                                </select>
+                                </select> -->
+                                <?php echo form_dropdown('jenis_kelamin', array(''=>'Pilih Jenis Kelamin','L'=>'Laki - Laki','P'=>'Perempuan'),$jenis_kelamin,array('id'=>'jenis_kelamin','class'=>'form-control'));?>
                             </div>
                         </div>
                         <div class="form-group">
@@ -376,7 +377,7 @@
     
     function autocomplate_no_id(){
         //autocomplete
-        $("#no_id").autocomplete({
+        $("#nik").autocomplete({
             source: "<?php echo base_url() ?>index.php/pendaftaran/autocomplate_no_id_pasien",
             minLength: 1
         });
@@ -384,20 +385,22 @@
     }
     
     function autoFill(){
-        var no_id = $("#no_id").val();
+        var no_id = $("#nik").val();
         $.ajax({
             url: "<?php echo base_url() ?>index.php/pendaftaran/autofill",
             data:"no_id="+no_id ,
         }).success(function (data) {
             var json = data,
             obj = JSON.parse(json);
+            console.log(data);
             $('#no_rekam_medis').val(obj.no_rekam_medis);
             $('#nama_lengkap').val(obj.nama_lengkap);
 			$('#pekerjaan').val(obj.pekerjaan);
 			$('#alamat').val(obj.alamat);
 			$('#kabupaten').val(obj.kabupaten);
-			$('#kecamatan').val(obj.kecamatan);
-			$('#kelurahan').val(obj.kelurahan);
+			$('#rt').val(obj.rt);
+			$('#rw').val(obj.rw);
+			$('#jenis_kelamin').val(obj.jenis_kelamin);
 			$('#nama_orangtua_atau_istri').val(obj.nama_orangtua_atau_istri);
 			$('#nomor_telepon').val(obj.nomor_telepon);
 			$('#golongan_darah').val(obj.golongan_darah);

@@ -30,6 +30,7 @@ class Pendaftaran extends CI_Controller
     }
     
     public function create(){
+        // return var_dump($this->input->post());
         $this->_rules();
 				
         if ($this->form_validation->run() == TRUE) {
@@ -95,12 +96,14 @@ class Pendaftaran extends CI_Controller
 			
 			$this->db->where('no_id_pasien', set_value('no_id'));
 			$dataPasien = $this->db->get('tbl_pasien')->row();
+            
 			$this->data['no_rekam_medis_default'] = $this->Master_sequence_model->set_code_by_master_seq_code("NOREKAMMEDIS");
 			
 			$this->data['no_rekam_medis'] = $pasien_existing != null ? $pasien_existing->no_rekam_medis : ($dataPasien != null ? set_value('no_rekam_medis') : $this->data['no_rekam_medis_default']);
 			$this->data['no_id'] = $pasien_existing != null ? $pasien_existing->no_id_pasien : set_value('no_id');
 			$this->data['nama_lengkap'] = $pasien_existing != null ? $pasien_existing->nama_lengkap : set_value('nama_lengkap');
 			$this->data['nik'] = $pasien_existing != null ? $pasien_existing->nik : set_value('nik');
+			$this->data['jenis_kelamin'] = $pasien_existing != null ? $pasien_existing->jenis_kelamin : set_value('jenis_kelamin');
 			$this->data['tanggal_lahir'] = $pasien_existing != null ? $pasien_existing->tanggal_lahir : set_value('tanggal_lahir');
 			$this->data['golongan_darah'] = $pasien_existing != null ? $pasien_existing->golongan_darah : set_value('golongan_darah');
 			$this->data['status_menikah'] = $pasien_existing != null ? $pasien_existing->status_menikah : set_value('status_menikah');
@@ -243,8 +246,8 @@ class Pendaftaran extends CI_Controller
     }
     
 	function autocomplate_no_id_pasien(){
-        $this->db->like('no_id_pasien', $_GET['term']);
-        $this->db->select('no_id_pasien');
+        $this->db->like('nik', $_GET['term']);
+        $this->db->select('*');
         $dataPasien = $this->db->get('tbl_pasien')->result();
         foreach ($dataPasien as $pasien) {
             $return_arr[] = $pasien->no_id_pasien;
@@ -254,14 +257,15 @@ class Pendaftaran extends CI_Controller
     
     function autofill(){
         $no_id = $_GET['no_id'];
-        $this->db->where('no_id_pasien',$no_id);
+        $this->db->where('NIK',$no_id);
         $pasien = $this->db->get('tbl_pasien')->row_array();
         $data = array(
             'no_rekam_medis'    => $pasien['no_rekam_medis'],
 			'nama_lengkap'      =>  $pasien['nama_lengkap'],
-			'tanggal_lahir'      =>  $pasien['tanggal_lahir'],
+			'tanggal_lahir'      =>  str_replace('-','-',$pasien['tanggal_lahir']),
 			'golongan_darah'      =>  $pasien['golongan_darah'],
 			'status_menikah'      =>  $pasien['status_menikah'],
+			'jenis_kelamin'      =>  $pasien['jenis_kelamin'],
 			'pekerjaan'      =>  $pasien['pekerjaan'],
 			'alamat'      =>  $pasien['alamat'],
 			'kabupaten' => $pasien['kabupaten'],
@@ -279,7 +283,7 @@ class Pendaftaran extends CI_Controller
     	// $this->form_validation->set_rules('no_id', 'No ID Pasien', 'trim|required');
     	$this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'trim|required');
     	$this->form_validation->set_rules('nik', 'NIK', 'trim|required');
-    	$this->form_validation->set_rules('tanggal_lahir', 'Tanggal Lahir', 'trim|required');
+    	$this->form_validation->set_rules('tanggal_lahir', 'Tanggal Lahir', 'trim|required|is_unique[tbl_pasien.nik]');
     // 	$this->form_validation->set_rules('golongan_darah', 'Golongan Darah', 'trim|required');
     	$this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'trim|required');
     	$this->form_validation->set_rules('status_menikah', 'Status Menikah', 'trim|required');
