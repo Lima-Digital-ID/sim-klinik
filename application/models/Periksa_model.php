@@ -151,7 +151,7 @@ class Periksa_model extends CI_Model
         // $this->datatables->add_column('action',anchor(site_url('periksamedis/riwayat_detail/$1'),'View', array('class' => 'btn waves-effect waves-light btn-xs btn-success')),'no_rekam_medis');
         $this->datatables->add_column('action', 
         anchor(site_url('periksamedis/edit?id=$2'),'Edit', array('class' => 'btn btn-warning btn-sm'))." ".anchor(site_url('periksamedis/riwayat_detail/$1'),'View','class="btn btn-info btn-sm"')." ".anchor(site_url('periksamedis/riwayat_detail/$1'),'Print','class="btn btn-success btn-sm"'), 'no_rekam_medis,no_periksa');
-        if($id_dokter != 0){
+        if($id_dokter != 0 && $id_dokter !=null ){
             $this->datatables->where('p.id_dokter',$id_dokter);
         }
         $this->datatables->group_by('p.no_rekam_medis');
