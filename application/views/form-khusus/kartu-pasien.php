@@ -41,6 +41,11 @@ function hitung_umur($tanggal_lahir){
                     <td>...........................</td>
                 </tr>
                 <tr>
+                    <td width="25%">Tensi / Suhu</td>
+                    <td width="3%">:</td>
+                    <td>...........................</td>
+                </tr>
+                <tr>
                     <td width="25%">Riwayat Alergi</td>
                     <td width="3%">:</td>
                     <td>...........................</td>
@@ -50,7 +55,7 @@ function hitung_umur($tanggal_lahir){
             <br>
             <table border='1' height="100%" width="100%" cellspacing='0' cellpadding='10'>
                 <tr>
-                    <th>VITAL SIGN</th>
+                    <th>TANGGAL PERIKSA</th>
                     <th>ANAMNESA</th>
                     <th>DIAGNOSA</th>
                 </tr>

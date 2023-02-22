@@ -461,10 +461,18 @@ class Periksamedis extends CI_Controller
         $data_pasien = $this->Tbl_pasien_model->get_by_id($pasien->no_rekam_medis);
         $this->data['no_periksa'] = $pasien->no_periksa;
         if (isset($data_pasien)) {
+            $this->db->from('f.*');
+            $this->db->from('tbl_periksa_d_fisik f');
+            $this->db->join('tbl_periksa p','f.no_periksa = p.no_periksa');
+            $this->db->where('p.no_rekam_medis',$pasien->no_rekam_medis);
+            $this->data['d_fisik'] = $this->db->get()->result();
+            
             $this->data['nama_lengkap'] = $data_pasien->nama_lengkap;
             $this->data['alamat'] = $data_pasien->alamat . ' ' . $data_pasien->kabupaten . ' ' . 'RT ' . $data_pasien->rt . ' ' . 'RW ' . $data_pasien->rw;
             $this->data['riwayat_alergi_obat'] = $data_pasien->riwayat_alergi_obat;
             $this->data['no_pendaftaran'] = $pasien->no_pendaftaran;
+            $this->data['no_rm'] = $pasien->no_rekam_medis;
+            $this->data['pasien'] = $pasien;
         }
         $this->data['anamnesies'] = $this->get_master_ref($this->master_ref_code_anamnesi);
         $this->data['alergi_obat'] = $this->get_master_ref($this->master_ref_code_alergiobat);
@@ -1524,9 +1532,9 @@ class Periksamedis extends CI_Controller
         echo $this->Periksa_model->json($data_pendaftaran->no_rekam_medis);
     }
 
-    public function edit_json_by_id($id)
+    public function edit_json_by_id($no_rm)
     {
-        $data_pendaftaran = $this->Pendaftaran_model->get_by_id($id);
+        $data_pendaftaran = $this->Periksa_model->json($no_rm);
 
         header('Content-Type: application/json');
         echo $data_pendaftaran;

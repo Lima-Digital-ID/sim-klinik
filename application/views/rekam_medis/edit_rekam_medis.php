@@ -112,7 +112,7 @@
 						<div class="form-group">
 							<div class="col-sm-2">Anamnesi <?php echo form_error('anamnesi'); ?></div>
 							<div class="col-sm-10">
-                                <?php echo form_textarea(array('id'=>'anamnesi','name'=>'anamnesi','type'=>'textarea','value'=>'','rows'=>'4','class'=>'form-control'));?>
+                                <?php echo form_textarea(array('id'=>'anamnesi','name'=>'anamnesi','type'=>'textarea','value'=>$pasien->anamnesi,'rows'=>'4','class'=>'form-control'));?>
                             </div>
 						</div>
                         <div id="input_fields_wrap_cek_fisik">
@@ -154,6 +154,13 @@
                             </div>
 						</div>
 						<hr />
+                        <div class="row">
+                            <?php 
+                                foreach ($d_fisik as $key => $value) {
+                            ?>
+                                
+                            <?php } ?>
+                        </div>
 						<div class="form-group">
 							<div class="col-sm-2">Berat Badan</div>
 							<div class="col-sm-4">
@@ -663,12 +670,13 @@
             },
             processing: true,
             serverSide: true,
-            ajax: {"url": "edit_json_by_id/"+<?= $no_pendaftaran ?>, "type": "GET"},
+            ajax: {"url": "edit_json_by_id/"+<?= $no_rm ?>, "type": "POST"},
             columns: [
                 {
                     "data": "no_periksa",
                     "orderable": false
-                },{"data": "tgl_periksa"},{"data": "anamnesi"},{"data": "diagnosa"},{"data": "obat_detail"}
+                },
+                {"data": "tgl_periksa"},{"data": "anamnesi"},{"data": "diagnosa"},{"data": "obat_detail"}
                 ,/*{
                     "data" : "action",
                     "orderable": false,
