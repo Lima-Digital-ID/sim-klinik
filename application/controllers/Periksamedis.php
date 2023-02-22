@@ -463,10 +463,10 @@ class Periksamedis extends CI_Controller
         if (isset($data_pasien)) {
             $this->db->from('f.*');
             $this->db->from('tbl_periksa_d_fisik f');
-            $this->db->join('tbl_periksa p','f.no_periksa = p.no_periksa');
-            $this->db->where('p.no_rekam_medis',$pasien->no_rekam_medis);
+            $this->db->join('tbl_periksa p', 'f.no_periksa = p.no_periksa');
+            $this->db->where('p.no_rekam_medis', $pasien->no_rekam_medis);
             $this->data['d_fisik'] = $this->db->get()->result();
-            
+
             $this->data['nama_lengkap'] = $data_pasien->nama_lengkap;
             $this->data['alamat'] = $data_pasien->alamat . ' ' . $data_pasien->kabupaten . ' ' . 'RT ' . $data_pasien->rt . ' ' . 'RW ' . $data_pasien->rw;
             $this->data['riwayat_alergi_obat'] = $data_pasien->riwayat_alergi_obat;
@@ -1540,11 +1540,12 @@ class Periksamedis extends CI_Controller
         echo $data_pendaftaran;
         // echo $this->Periksa_model->json($data_pendaftaran->no_rekam_medis);
     }
-    
-    public function json_antrian($tipe=1,$isFormKhusus=false){
+
+    public function json_antrian($tipe = 1, $isFormKhusus = false)
+    {
         header('Content-Type: application/json');
         // echo $this->Pendaftaran_model->json_antrian($this->id_dokter,$tipe);
-        echo $this->Pendaftaran_model->json_antrian($this->id_dokter,$tipe,$isFormKhusus);
+        echo $this->Pendaftaran_model->json_antrian($this->id_dokter, $tipe, $isFormKhusus);
     }
 
     public function json_riwayat()
@@ -1847,5 +1848,43 @@ class Periksamedis extends CI_Controller
         }
 
         $this->template->load('template', 'rekam_medis/biayask', $data);
+    }
+
+    public function viewRiwayat()
+    {
+        $tipe = $_GET['tipe'];
+        $id = $_GET['id'];
+        $id2 = $_GET['no_periksa'];
+        $data['tipe'] = $tipe;
+        $data['pasien'] = $this->Tbl_pasien_model->get_by_id($id);
+        $data['periksa'] = $this->Periksa_model->get_by_id($id2);
+        $data['diagnosa'] = $this->Tbl_periksa_diagnosa_model->get_by_no_periksa($data['periksa']->no_periksa);
+        $data['obat'] = $this->Periksa_model->get_d_obat_by_id($id2, true);
+        $data['berat_badan'] = $this->Periksa_model->get_d_fisik_by_id($id2, 'Berat Badan');
+        $data['tinggi_badan'] = $this->Periksa_model->get_d_fisik_by_id($id2, 'Tinggi Badan');
+        $data['tekanan_darah'] = $this->Periksa_model->get_d_fisik_by_id($id2, 'Tekanan Darah');
+        $data['suhu_tubuh'] = $this->Periksa_model->get_d_fisik_by_id($id2, 'Suhu Tubuh');
+        $this->load->view('rekam_medis/view_rekam_medis', $data);
+    }
+
+    public function riwayatPasien()
+    {
+        $this->template->load('template', 'rekam_medis/view_pasien_list');
+    }
+
+    public function jsonRiwayatPasien()
+    {
+        header('Content-Type: application/json');
+        echo $this->Tbl_pasien_model->json2();
+    }
+
+    public function viewRiwayatPasien()
+    {
+        $tipe = $_GET['tipe'];
+        $id = $_GET['id'];
+        $data['tipe'] = $tipe;
+        $data['pasien'] = $this->Tbl_pasien_model->get_by_id($id);
+        $data['periksa'] = $this->Periksa_model->get_all_by_id($id);
+        $this->load->view('rekam_medis/view_rekam_medis_pasien', $data);
     }
 }

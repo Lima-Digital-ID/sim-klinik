@@ -78,7 +78,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "pasien/json",
+                "url": "jsonRiwayatPasien",
                 "type": "POST"
             },
             columns: [{
