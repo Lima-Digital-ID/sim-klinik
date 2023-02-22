@@ -107,14 +107,15 @@ class Pendaftaran_model extends CI_Model
         return $this->datatables->generate();
     }
     
-    function json_antrian($id_dokter,$tipe){
+    function json_antrian($id_dokter,$tipe,$isFormKhusus=false){
         $this->datatables->select('pd.no_pendaftaran,pd.no_rekam_medis,ps.no_id_pasien,ps.nama_lengkap as nama_pasien,k.nama as klinik,d.nama_dokter,pd.dtm_crt as tgl_pendaftaran,(CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "Dalam Proses" ELSE (CASE pd.is_periksa WHEN 0 THEN "Dalam Antrian" END) END) as status, (CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "disabled" END) as status_antrian,tipe_periksa');
         $this->datatables->from('tbl_pendaftaran pd');
         $this->datatables->join('tbl_pasien ps','pd.no_rekam_medis=ps.no_rekam_medis');
         $this->datatables->join('tbl_dokter d','pd.id_dokter=d.id_dokter');
         $this->datatables->join('tbl_dokter dd','pd.no_pendaftaran=dd.no_pendaftaran', 'left');
         $this->datatables->join('tbl_klinik k', 'pd.id_klinik = k.id_klinik');
-        $where = "pd.is_periksa = '0' and pd.id_dokter = '$id_dokter' ";
+        $whereDokter = $id_dokter ? " and pd.id_dokter = '$id_dokter'" : '';
+        $where = "pd.is_periksa = '0' $whereDokter ";
         // $this->datatables->where('pd.is_periksa', 0);
         // $this->datatables->where('pd.id_dokter', $id_dokter);
         if($tipe==1 || $tipe==4){
@@ -127,8 +128,17 @@ class Pendaftaran_model extends CI_Model
             // $this->datatables->where('pd.tipe_periksa', $tipe);
         }
         $this->datatables->where($where);
+        
+        $this->datatables->add_column('option',"<select data-no='$1' class='form-control optionList'>
+        <option value='1'>Surat Rujukan</option><option value='2'>Blanko Resep</option><option value='3'>Kartu Pasien</option></select>",'no_pendaftaran');
 
-        $this->datatables->add_column('action',anchor(site_url('periksamedis/periksa/$1?tipe=$3'),'Periksa','class="btn btn-warning btn-sm $2"'),'no_pendaftaran,status_antrian,tipe_periksa');
+        if($isFormKhusus){
+            $this->datatables->add_column('action',anchor(site_url('form_khusus/preview/$1?act=preview'),'Preview','class="btn btn-warning btn-sm btn-act" data-no="$1" data-form="1"') ." ". anchor(site_url('form_khusus/preview/$1?act=doc'),'Download Doc','class="btn btn-primary btn-sm btn-act" data-no="$1" data-form="1"')." ". anchor(site_url('form_khusus/preview/$1?act=print'),'Print','class="btn btn-success btn-sm btn-act" data-no="$1" data-form="1"'),'no_pendaftaran');
+
+        }
+        else{
+            $this->datatables->add_column('action',anchor(site_url('periksamedis/periksa/$1?tipe=$3'),'Periksa','class="btn btn-warning btn-sm $2"'),'no_pendaftaran,status_antrian,tipe_periksa');
+        }
             
         return $this->datatables->generate();
     }

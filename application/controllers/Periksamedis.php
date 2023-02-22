@@ -1519,10 +1519,10 @@ class Periksamedis extends CI_Controller
         // echo $this->Periksa_model->json($data_pendaftaran->no_rekam_medis);
     }
     
-    public function json_antrian($tipe=1){
+    public function json_antrian($tipe=1,$isFormKhusus=false){
         header('Content-Type: application/json');
         // echo $this->Pendaftaran_model->json_antrian($this->id_dokter,$tipe);
-        echo $this->Pendaftaran_model->json_antrian($this->id_dokter,$tipe);
+        echo $this->Pendaftaran_model->json_antrian($this->id_dokter,$tipe,$isFormKhusus);
     }
     
     public function json_riwayat(){
