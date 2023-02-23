@@ -431,7 +431,7 @@
 								<div class="input-group">
                                     <span class="input-group-addon" style="background-color: #fcffc4;">Tindakan</span>
                                     <input type="hidden" name="name_tindakan[]" id="nameTindakan">
-                                    <select name="select_tindakan" id="select_tindakan" style="width:100%" multiple="multiple" class="select2 form-control" onchange="hitung_biaya()" <?= $isDisabled ?>>
+                                    <select name="select_tindakan[]" id="select_tindakan" style="width:100%" multiple="multiple" class="select2 form-control" onchange="hitung_biaya()" <?= $isDisabled ?>>
                                         <option value="">---Pilih Tindakan---</option>
                                         <?php 
                                             foreach ($master_tindakan as $key => $value) {

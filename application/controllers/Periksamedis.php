@@ -281,7 +281,7 @@ class Periksamedis extends CI_Controller
                     // ),
                 );
 
-                foreach ($this->input->post('name_tindakan') as $key => $value) {
+                foreach ($this->input->post('select_tindakan') as $key => $value) {
                     $this->db->insert('tbl_periksa_tindakan',['no_periksa' => $this->input->post('no_periksa'), 'kode_tindakan' => $value]);
                 }
 
@@ -702,7 +702,7 @@ class Periksamedis extends CI_Controller
 
                 $this->db->delete('tbl_periksa_tindakan',['no_periksa' => $_GET['id']]);
 
-                foreach ($this->input->post('name_tindakan') as $key => $value) {
+                foreach ($this->input->post('select_tindakan') as $key => $value) {
                     $this->db->insert('tbl_periksa_tindakan',['no_periksa' => $this->input->post('no_periksa'), 'kode_tindakan' => $value]);
                 }
                 
