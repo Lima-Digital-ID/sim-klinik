@@ -116,25 +116,16 @@
                         <div id="input_fields_wrap_cek_fisik">
                             <div class="form-group">
                                 <div class="col-sm-2">Cek Fisik</div>
-                                <div class="col-sm-4">
-                                    <!-- <input type="text" name="cek_fisik[]" class="form-control"> -->
-                                    <select name="cek_fisik[]" id="" class="form-control">
-                                        <option value="">---Pilih Fisik---</option>
-                                        <?php
-                                        foreach ($cek_fisik as $value) { ?>
-                                            <option value="<?= $value->nama ?>"><?= $value->nama ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                                <div class="col-sm-6">
-                                    <input type="text" name="cek_fisik_value[]" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <div align="right">
-                                    <button id="add_field_button_cek_fisik"><i class="fa fa-plus"></i>Tambah</button>
+                                <div class="col-sm-10">
+                                    <textarea name="cek_fisik" id="" cols="30" rows="10" class="form-control">
+Kondisi umum cukup, Kesadaran : compos mentis, GCS 456
+Pupil Bulat Isokor 3/3 mm Reflex Cahaya (+/+)
+Kepala dan Leher : Anemis (-), ikterik (-), cyanosis (-), dyspnea(-)
+Cor : Suara Jantung 1 Suara jantung 2 tunggal, Murmur (-), gallop (-)
+Pulmo : suara nafas vesikuler (+/+), rhonki (--/--) , Wheezing (--/--)
+Abdomen : datar, soepel, bising usus (+) normal, timpani
+Ekstremitas : akral hangat (+/+) (+/+), edema (-/-) capillary refil time kurang dari 2 detik
+                                    </textarea>
                                 </div>
                             </div>
                         </div>
@@ -690,7 +681,12 @@
                         </div>
                         <hr />
                         <div class="form-group">
-                            <div class="col-sm-12">
+                        <div class="col-sm-6">
+                                <input type="checkbox" name="is_final" id="is_final" value="1">
+                                &nbsp;
+                                <label for="is_final">Simpan Final</label>
+                            </div>
+							<div class="col-sm-6">
                                 <div align="right">
                                     <input type="button" class="btn btn-info" onclick="tab1Show();" value="Kembali" />
                                     <script type="text/javascript">

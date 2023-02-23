@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<?php echo form_open(current_url(), array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
+<?php echo form_open(current_url()."?id=".$_GET['id'], array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
 <div class="content-wrapper"  id="tab1">
     <section class="content-header">
         <h1>
@@ -117,27 +117,12 @@
 						</div>
                         <div id="input_fields_wrap_cek_fisik">
 							<div class="form-group">
-                                <div class="col-sm-2">Cek Fisik</div>
-								<div class="col-sm-4">
-                                    <!-- <input type="text" name="cek_fisik[]" class="form-control"> -->
-                                    <select name="cek_fisik[]" id="" class="form-control">
-                                        <option value="">---Pilih Fisik---</option>
-                                        <?php
-                                        foreach($cek_fisik as $value){ ?>
-                                            <option value="<?= $value->nama ?>"><?= $value->nama ?></option>
-                                        <?php } ?>
-                                    </select>
+                            <div class="col-sm-2">Cek Fisik</div>
+                                <div class="col-sm-10">
+                                    <textarea name="cek_fisik" id="" cols="30" rows="10" class="form-control">
+<?= $pasien->cek_fisik ?>
+                                    </textarea>
                                 </div>
-								<div class="col-sm-6">
-									<input type="text" name="cek_fisik_value[]" class="form-control">
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-12">
-								<div align="right">
-									<button id="add_field_button_cek_fisik"><i class="fa fa-plus"></i>Tambah</button>
-								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -157,30 +142,20 @@
                         <div class="row">
                             <?php 
                                 foreach ($d_fisik as $key => $value) {
+                                    $name = strtolower($value->nama_periksa_fisik);
+                                    $name = str_replace(' ','_',$name);
                             ?>
-                                
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-sm-4"><?= $value->nama_periksa_fisik ?></div>
+                                    <div class="col-sm-8">
+                                        <?php echo form_input(array('id'=>$name,'name'=>$name,'type'=>'text','value'=>$value->nilai_periksa_fisik,'class'=>'form-control'));?>
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
                             <?php } ?>
                         </div>
-						<div class="form-group">
-							<div class="col-sm-2">Berat Badan</div>
-							<div class="col-sm-4">
-                                <?php echo form_input(array('id'=>'berat_badan','name'=>'berat_badan','type'=>'text','value'=>'','class'=>'form-control'));?>
-                            </div>
-							<div class="col-sm-2">Tekanan Darah</div>
-							<div class="col-sm-4">
-                                <?php echo form_input(array('id'=>'tekanan_darah','name'=>'tekanan_darah','type'=>'text','value'=>'','class'=>'form-control'));?>
-                            </div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-2">Tinggi Badan</div>
-							<div class="col-sm-4">
-                                <?php echo form_input(array('id'=>'tinggi_badan','name'=>'tinggi_badan','type'=>'text','value'=>'','class'=>'form-control'));?>
-                            </div>
-							<div class="col-sm-2">Suhu Tubuh</div>
-							<div class="col-sm-4">
-                                <?php echo form_input(array('id'=>'suhu_tubuh','name'=>'suhu_tubuh','type'=>'text','value'=>'','class'=>'form-control'));?>
-                            </div>
-						</div>
 						<hr />
 						<div class="form-group">
 							<div class="col-sm-12">
@@ -221,7 +196,7 @@
 						<div class="form-group">
 							<div class="col-sm-2">Diagnosa <?php echo form_error('diagnosa'); ?></div>
 							<div class="col-sm-10">
-                                <?php echo form_textarea(array('id'=>'diagnosa','name'=>'diagnosa','type'=>'textarea','value'=>'','rows'=>'4','class'=>'form-control'));?>
+                                <?php echo form_textarea(array('id'=>'diagnosa','name'=>'diagnosa','type'=>'textarea','value'=>$pasien->diagnosa,'rows'=>'4','class'=>'form-control'));?>
                             </div>
 						</div>
 						<div class="form-group row">
@@ -230,7 +205,8 @@
                                 <select name="id_diagnosa[]" class="form-control select2" multiple="multiple" id="selectICD10" style="width:100%">
                                     <?php
                                         foreach ($diagnosa_icd10 as $value) {
-                                            echo "<option value='".$value->id_diagnosa."'>".$value->code." - ".$value->diagnosa."</option>";
+                                            $selected = in_array($value->id_diagnosa,$periksa_diagnosa) ? "selected" : "";
+                                            echo "<option value='".$value->id_diagnosa."' $selected>".$value->code." - ".$value->diagnosa."</option>";
                                         }
                                     ?>
                                 </select>
@@ -266,7 +242,7 @@
 						<div class="form-group">
 							<div class="col-sm-2">Tindakan</div>
 							<div class="col-sm-10">
-                                <?php echo form_textarea(array('id'=>'tindakan','name'=>'tindakan','type'=>'textarea','value'=>'','rows'=>'4','class'=>'form-control'));?>
+                                <?php echo form_textarea(array('id'=>'tindakan','name'=>'tindakan','type'=>'textarea','value'=>$pasien->tindakan,'rows'=>'4','class'=>'form-control'));?>
                             </div>
 						</div>
 						<hr />
@@ -289,123 +265,57 @@
                                 </div>
     						</div>
 						<div id="input_fields_wrap_obat">
+                            <?php 
+                                $isDisabled = $pasien->is_periksa == '1' ? 'disabled' : '';
+
+                                foreach ($periksa_obat as $key => $value) {
+                            ?>
     						<div class="form-group">
     							<div class="col-sm-2">Obat</div>
     							<div class="col-sm-2">
                                     <div class="input-group">
-                                        <span class="input-group-addon">1</span>
-                                        <?php echo form_dropdown('obat[]',$obat_option,'',array('id'=>'obat[]','class'=>'form-control select2','onchange'=>'get_obat(this)','style'=>'width:100%;'));?>
+                                        <span class="input-group-addon"><?= $key != 0 && $pasien->is_periksa == '0' ? '<a href="#" class="remove_field_obat">X</a>' : $key+1 ?></span>
+
+                                        <select name="obat[]" id="obat[]" class="form-control select2 kodeObat" onchange="get_obat(this)" width="100%" data-jml="<?= $value->jumlah ?>" <?= $isDisabled ?>>
+                                            <option value="">Pilih Obat</option>
+                                            <?php 
+                                                foreach ($obat_option as $key => $v) {
+                                                    $selected = $value->kode_barang == $v->kode_barang ? 'selected' : '';
+                                                    echo "<option value='".$v->kode_barang."' data-harga='".$v->harga_jual."' $selected>".$v->nama_barang."</option>";
+                                                }
+                                            ?>
+                                        </select>
+
                                         </div>
                                 </div>
                                 <div class="col-sm-2">
-                                    <?php echo form_dropdown('ket_obat[]', array(''=>'Pilih Keterangan'),'',array('id'=>'ket_obat[]','class'=>'form-control','onchange'=>'get_obat(this)'));?>
+                                    <?php echo form_dropdown('ket_obat[]', array(''=>'Pilih Keterangan'),$value->keterangan,array('id'=>'ket_obat[]','class'=>'form-control',$isDisabled.' onchange'=>'get_obat(this)'));?>
                                 </div>
     							<div class="col-sm-2">
-                                    <?php echo form_dropdown('jml_obat[]', array(''=>'Pilih Jumlah'),'',array('id'=>'jml_obat[]','class'=>'form-control select2','onchange'=>'get_obat(this,true)'));?>
+                                    <?php echo form_dropdown('jml_obat[]', array(''=>'Pilih Jumlah'),$value->jumlah,array('id'=>'jml_obat[]','class'=>'form-control select2',$isDisabled.' onchange'=>'get_obat(this,true)'));?>
                                 </div>
     							<div class="col-sm-2">
-                                    <input type="text" id="anjuran_obat[]" name="anjuran_obat[]" class="form-control">
                                     <!-- <?php echo form_dropdown('anjuran_obat[]',array(''=>'Pilih Anjuran'),'',array('id'=>'anjuran_obat[]','class'=>'form-control'));?> -->
+                                    <input type="text" id="anjuran_obat[]" name="anjuran_obat[]" class="form-control" value="<?= $value->anjuran ?>" <?= $isDisabled ?>>
                                 </div>
                                 <div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'kegunaan_obat[]','name'=>'kegunaan_obat[]','type'=>'text','value'=>'','class'=>'form-control'));?>
+                                    <?php echo form_input(array('id'=>'kegunaan_obat[]','name'=>'kegunaan_obat[]','type'=>'text','value'=>$value->penggunaan_obat,$isDisabled.' class'=>'form-control'));?>
                                 </div>
     							<div style="display:none;">
-                                    <?php echo form_input(array('id'=>'harga_obat[]','name'=>'harga_obat[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
+                                    <?php echo form_input(array('id'=>'harga_obat[]',$isDisabled.' name'=>'harga_obat[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
                                 </div>
-                                <!-- <div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'harga_obat_real[]','name'=>'harga_obat_real[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
-                                </div> -->
-                </div>
-    						<!-- <div class="form-group">
-    							<div class="col-sm-2"></div>
-    							<div class="col-sm-2">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">2</span>
-                                        <?php echo form_dropdown('obat[]',$obat_option,'',array('id'=>'obat[]','class'=>'form-control select2','onchange'=>'get_obat(this)','style'=>'width:100%;'));?>
-                                        </div>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('ket_obat[]', array(''=>'Pilih Keterangan'),'',array('id'=>'ket_obat[]','class'=>'form-control','onchange'=>'get_obat(this)'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('jml_obat[]', array(''=>'Pilih Jumlah'),'',array('id'=>'jml_obat[]','class'=>'form-control','onchange'=>'get_obat(this,true)'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('anjuran_obat[]',array(''=>'Pilih Anjuran'),'',array('id'=>'anjuran_obat[]','class'=>'form-control'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'kegunaan_obat[]','name'=>'kegunaan_obat[]','type'=>'text','value'=>'','class'=>'form-control'));?>
-                                </div>
-    							<div style="display:;">
-                                    <?php echo form_input(array('id'=>'harga_obat[]','name'=>'harga_obat[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
-                                </div>
-                                <div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'harga_obat_real[]','name'=>'harga_obat_real[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
-                                </div>
-    						</div>
-    						<div class="form-group">
-    							<div class="col-sm-2"></div>
-    							<div class="col-sm-2">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">3</span>
-                                        <?php echo form_dropdown('obat[]',$obat_option,'',array('id'=>'obat[]','class'=>'form-control select2','onchange'=>'get_obat(this)','style'=>'width:100%;'));?>
-                                        </div>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('ket_obat[]', array(''=>'Pilih Keterangan'),'',array('id'=>'ket_obat[]','class'=>'form-control','onchange'=>'get_obat(this)'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('jml_obat[]', array(''=>'Pilih Jumlah'),'',array('id'=>'jml_obat[]','class'=>'form-control','onchange'=>'get_obat(this,true)'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('anjuran_obat[]',array(''=>'Pilih Anjuran'),'',array('id'=>'anjuran_obat[]','class'=>'form-control'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'kegunaan_obat[]','name'=>'kegunaan_obat[]','type'=>'text','value'=>'','class'=>'form-control'));?>
-                                </div>
-    							<div style="display:;">
-                                    <?php echo form_input(array('id'=>'harga_obat[]','name'=>'harga_obat[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
-                                </div>
-                                <div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'harga_obat_real[]','name'=>'harga_obat_real[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
-                                </div>
-    						</div>
-    						<div class="form-group">
-    							<div class="col-sm-2"></div>
-    							<div class="col-sm-2">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">4</span>
-                                        <?php echo form_dropdown('obat[]',$obat_option,'',array('id'=>'obat[]','class'=>'form-control select2','onchange'=>'get_obat(this)','style'=>'width:100%;'));?>
-                                        </div>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('ket_obat[]', array(''=>'Pilih Keterangan'),'',array('id'=>'ket_obat[]','class'=>'form-control','onchange'=>'get_obat(this)'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('jml_obat[]', array(''=>'Pilih Jumlah'),'',array('id'=>'jml_obat[]','class'=>'form-control','onchange'=>'get_obat(this,true)'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_dropdown('anjuran_obat[]',array(''=>'Pilih Anjuran'),'',array('id'=>'anjuran_obat[]','class'=>'form-control'));?>
-                                </div>
-    							<div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'kegunaan_obat[]','name'=>'kegunaan_obat[]','type'=>'text','value'=>'','class'=>'form-control'));?>
-                                </div>
-    							<div style="display:;">
-                                    <?php echo form_input(array('id'=>'harga_obat[]','name'=>'harga_obat[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
-                                </div>
-                                <div class="col-sm-2">
-                                    <?php echo form_input(array('id'=>'harga_obat_real[]','name'=>'harga_obat_real[]','type'=>'text','value'=>'','class'=>'form-control', 'readonly'=>'readonly','style'=>'text-align:right;'));?>
-                                </div>
-    						</div> -->
+                            </div>
+                            <?php } ?>
     					</div>
 						<div class="form-group">
 							<div class="col-sm-2">Catatan Apoteker</div>
 							<div class="col-sm-10">
-								<?php echo form_textarea(array('id'=>'note_apoteker','name'=>'note_apoteker','type'=>'textarea','value'=>'','rows'=>'4','class'=>'form-control'));?>
+								<?php echo form_textarea(array('id'=>'note_apoteker','name'=>'note_apoteker','type'=>'textarea','value'=>$pasien->note_apoteker,'rows'=>'4',$isDisabled.' class'=>'form-control'));?>
 							</div>
 						</div>
-
+                        <?php 
+                            if($pasien->is_periksa == '0'){
+                        ?>
     					<div class="form-group">
 							<div class="col-sm-12">
 								<div align="right">
@@ -413,32 +323,33 @@
 								</div>
 							</div>
 						</div>
+                        <?php } ?>
 						<hr />
 						<div class="form-group">
 							<div class="col-sm-8"></div>
 							<div class="col-sm-2">Total</div>
 							<div class="col-sm-2">
-                                <?php echo form_input(array('id'=>'total_harga','name'=>'total_harga','type'=>'text','value'=>'','class'=>'form-control','readonly'=>'readonly','style'=>'text-align:right;'));?>
+                                <?php echo form_input(array('id'=>'total_harga','name'=>'total_harga','type'=>'text','value'=>'','class'=>'form-control','readonly'=>'readonly',$isDisabled.' style'=>'text-align:right;'));?>
                             </div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-8"></div>
 							<div class="col-sm-2">Subsidi</div>
 							<div class="col-sm-2">
-                                <?php echo form_input(array('id'=>'subsidi_harga','name'=>'subsidi_harga','type'=>'number','value'=>'0','class'=>'form-control','onchange'=>'display_total_harga()','style'=>'text-align:right;'));?>
+                                <?php echo form_input(array('id'=>'subsidi_harga','name'=>'subsidi_harga','type'=>'number','value'=>$subsidi_obat->jumlah,'class'=>'form-control',$isDisabled.' onchange'=>'display_total_harga()','style'=>'text-align:right;'));?>
                             </div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-8"></div>
 							<div class="col-sm-2">Grand Total</div>
 							<div class="col-sm-2">
-                                <?php echo form_input(array('id'=>'grandtotal_harga','name'=>'grandtotal_harga','type'=>'text','value'=>'','class'=>'form-control','readonly'=>'readonly','style'=>'text-align:right;'));?>
+                                <?php echo form_input(array('id'=>'grandtotal_harga','name'=>'grandtotal_harga','type'=>'text','value'=>'','class'=>'form-control','readonly'=>'readonly',$isDisabled.' style'=>'text-align:right;'));?>
                             </div>
 						</div>
 						<hr />
 						<div class="form-group">
 							<div class="col-sm-2">Surat Keterangan Sakit</div>
-							<div class="col-sm-4"><?php echo form_checkbox(array('id' => 'is_cetak_surat','name' => 'is_cetak_surat','value'=>1,'checked'=>false,'onchange'=>'cek_surat()'));?></div>
+							<div class="col-sm-4"><?php echo form_checkbox(array('id' => 'is_cetak_surat','name' => 'is_cetak_surat','value'=>1,'checked'=>$pasien->is_surat_ket_sakit == '1' ? 'checked' : '' ,$isDisabled.' onchange'=>'cek_surat()'));?></div>
 							<script type="text/javascript"> 
                             function cek_surat(){
                                 document.getElementById("show_surat").style.display="none";
@@ -452,30 +363,38 @@
 						<div id="show_surat" style="display:none;">
                             <div class="form-group">
                                 <div class="col-sm-2">Nomor <?php echo form_error('nomor_skt'); ?></div>
+                                <?php 
+                                    if($pasien->nomor_skt==''){
+                                ?>
                                 <div class="col-sm-1">
-                                        <?php echo form_input(array('id'=>'nomor_skt','name'=>'nomor_skt','type'=>'text','value'=> $nomor_skt,'class'=>'form-control'));?>
+                                        <?php echo form_input(array('id'=>'nomor_skt','name'=>'nomor_skt','type'=>'text','value'=> $nomor_skt,$isDisabled.' class'=>'form-control'));?>
                                 </div>
                                 <div class="col-sm-9" style="padding-left:0px">
                                     <h4 style="margin-top:5px;"><?= "/".date('m')."/KR/SK/".date('y') ?></h4>
                                 </div>
+                                <?php } else{?>
+                                    <div class="col-md-4">
+                                        <?php echo form_input(array('id'=>'nomor_skt','name'=>'nomor_skt','type'=>'text','value'=> $pasien->nomor_skt,$isDisabled.' readonly class'=>'form-control'));?>
+                                    </div>
+                                <?php } ?>
                             </div>
     						<div class="form-group">
     							<div class="col-sm-2">Kepada/Pekerjaan</div>
     							<div class="col-sm-4">
-    								<?php echo form_input(array('id'=>'tujuan_surat','name'=>'tujuan_surat','type'=>'text','value'=>'','class'=>'form-control'));?>
+    								<?php echo form_input(array('id'=>'tujuan_surat','name'=>'tujuan_surat','type'=>'text','value'=>$pasien->tujuan_surat,$isDisabled.' class'=>'form-control'));?>
     							</div>
     						</div>
     						<div class="form-group">
     							<div class="col-sm-2">Tanggal Mulai</div>
     							<div class="col-sm-4">
-    								<input type="date" class="form-control" name="tanggal_mulai" id="tanggal_mulai" value="<?php echo date("Y-m-d",  time());?>" />
+    								<input type="date" class="form-control" name="tanggal_mulai" id="tanggal_mulai" value="<?= $pasien->tanggal_mulai;?>" <?= $isDisabled ?> />
     							</div>
     						</div>
     						<div class="form-group">
     							<div class="col-sm-2">Lama Istirahat</div>
     							<div class="col-sm-4">
     								<div class="input-group">
-                                        <?php echo form_input(array('id'=>'lama_istirahat_surat','name'=>'lama_istirahat_surat','type'=>'number','value'=>'','class'=>'form-control'));?>
+                                        <?php echo form_input(array('id'=>'lama_istirahat_surat','name'=>'lama_istirahat_surat','type'=>'number','value'=>$pasien->lama_istirahat_surat,$isDisabled.' class'=>'form-control'));?>
                                         <span class="input-group-addon">Hari</span>
                                         </div>
     							</div>
@@ -485,7 +404,7 @@
 						<div class="form-group">
 							<div class="col-sm-2">Catatan Dokter</div>
 							<div class="col-sm-10">
-								<?php echo form_textarea(array('id'=>'note_dokter','name'=>'note_dokter','type'=>'textarea','value'=>'','rows'=>'4','class'=>'form-control'));?>
+								<?php echo form_textarea(array('id'=>'note_dokter','name'=>'note_dokter','type'=>'textarea','value'=>$pasien->note_dokter,'rows'=>'4',$isDisabled.' class'=>'form-control'));?>
 							</div>
 						</div>
 						<hr />
@@ -494,15 +413,15 @@
 							<div class="col-sm-4">
 								<div class="input-group">
                                     <span class="input-group-addon" style="background-color: #fcffc4;">Pemeriksaan</span>
-                                    <?php echo form_input(array('id'=>'biaya_pemeriksaan','name'=>'biaya_pemeriksaan','type'=>'number','value'=>'','class'=>'form-control','style'=>'text-align:right;', 'onchange'=>'hitung_biaya()','placeholder'=>'0'));?>
+                                    <?php echo form_input(array('id'=>'biaya_pemeriksaan','name'=>'biaya_pemeriksaan','type'=>'number','value'=>$biaya_pemeriksaan->amount_transaksi,'class'=>'form-control','style'=>'text-align:right;', 'onchange'=>'hitung_biaya()',$isDisabled.' placeholder'=>'0'));?>
                                 </div>
 							</div>
 							<div class="col-sm-6">
 								<?php // echo form_dropdown('ket_pemeriksaan', array('1'=>'Subsidi','0'=>'Non Subsidi'),'0',array('id'=>'ket_pemeriksaan','class'=>'form-control', 'onchange'=>'hitung_biaya()'));?>
-                                  <input type="radio" name="ket_pemeriksaan" id="ket_pemeriksaan" value="1">
+                                  <input type="radio" name="ket_pemeriksaan" id="ket_pemeriksaan" value="1" <?= $isDisabled ?>>
                                   Subsidi
                                   &nbsp
-                                  <input type="radio" name="ket_pemeriksaan" id="ket_pemeriksaan" value="0" checked onchange="hitung_biaya();">
+                                  <input type="radio" name="ket_pemeriksaan" id="ket_pemeriksaan" value="0" checked onchange="hitung_biaya();" <?= $isDisabled ?>>
                                   Non Subsidi
 							</div>
 						</div>
@@ -511,25 +430,27 @@
 							<div class="col-sm-4">
 								<div class="input-group">
                                     <span class="input-group-addon" style="background-color: #fcffc4;">Tindakan</span>
-                                    <input type="hidden" name="name_tindakan" id="nameTindakan">
-                                    <select name="select_tindakan" id="select_tindakan" style="width:100%" multiple="multiple" class="select2 form-control" onchange="hitung_biaya()">
+                                    <input type="hidden" name="name_tindakan[]" id="nameTindakan">
+                                    <select name="select_tindakan" id="select_tindakan" style="width:100%" multiple="multiple" class="select2 form-control" onchange="hitung_biaya()" <?= $isDisabled ?>>
                                         <option value="">---Pilih Tindakan---</option>
                                         <?php 
                                             foreach ($master_tindakan as $key => $value) {
-                                                echo "<option data-biaya='".$value->biaya."' data-tindakan='".$value->tindakan."' value='".$value->kode_tindakan."'>".$value->kode_tindakan." - ".$value->tindakan." ".number_format($value->biaya,0,',','.')."</option>";
+                                                $selected = in_array($value->kode_tindakan,$periksa_tindakan) ? "selected" : "";
+
+                                                echo "<option data-biaya='".$value->biaya."' data-tindakan='".$value->tindakan."' value='".$value->kode_tindakan."' $selected>".$value->kode_tindakan." - ".$value->tindakan." ".number_format($value->biaya,0,',','.')."</option>";
                                             }
                                         ?>
                                     </select>
-                                    <input type="hidden" name="biaya_tindakan" id="biaya_tindakan" value='0'>
+                                    <input type="hidden" name="biaya_tindakan" id="biaya_tindakan" value='0' <?= $isDisabled ?>>
                                     <?php //echo form_input(array('id'=>'biaya_tindakan','name'=>'biaya_tindakan','type'=>'number','value'=>'','class'=>'form-control','style'=>'text-align:right;', 'onchange'=>'hitung_biaya()','placeholder'=>'0'));?>
                                 </div>
 							</div>
 							<div class="col-sm-6">
 								<?php // echo form_dropdown('ket_tindakan', array('1'=>'Subsidi','0'=>'Non Subsidi'),'0',array('id'=>'ket_tindakan','class'=>'form-control', 'onchange'=>'hitung_biaya()'));?>
-								  <input type="radio" name="ket_tindakan" id="ket_tindakan" value="1">
+								  <input type="radio" name="ket_tindakan" id="ket_tindakan" value="1" <?= $isDisabled ?>>
                                   Subsidi
                                   &nbsp
-                                  <input type="radio" name="ket_tindakan" id="ket_tindakan" value="0" checked onchange="hitung_biaya();">
+                                  <input type="radio" name="ket_tindakan" id="ket_tindakan" value="0" checked onchange="hitung_biaya();" <?= $isDisabled ?>>
                                   Non Subsidi
 							</div>
 						</div>
@@ -538,15 +459,15 @@
 							<div class="col-sm-4">
 								<div class="input-group">
                                     <span class="input-group-addon" style="background-color: #fcffc4;">Obat-obatan</span>
-                                    <?php echo form_input(array('id'=>'biaya_obat_obatan','name'=>'biaya_obat_obatan','type'=>'number','value'=>'','class'=>'form-control','style'=>'text-align:right;', 'onchange'=>'hitung_biaya()','placeholder'=>'0'));?>
+                                    <?php echo form_input(array('id'=>'biaya_obat_obatan','name'=>'biaya_obat_obatan','type'=>'number','value'=>'','class'=>'form-control','style'=>'text-align:right;', 'onchange'=>'hitung_biaya()',$isDisabled.' placeholder'=>'0'));?>
                                 </div>
 							</div>
 							<div class="col-sm-6">
 								<?php // echo form_dropdown('ket_obat_obatan', array('1'=>'Subsidi','0'=>'Non Subsidi'),'0',array('id'=>'ket_obat_obatan','class'=>'form-control', 'onchange'=>'hitung_biaya()'));?>
-								<input type="radio" name="ket_obat_obatan" id="ket_obat_obatan" value="1">
+								<input type="radio" name="ket_obat_obatan" id="ket_obat_obatan" value="1" <?= $isDisabled ?>>
                                   Subsidi
                                   &nbsp
-                                  <input type="radio" name="ket_obat_obatan" id="ket_obat_obatan" value="0" checked onchange="hitung_biaya();">
+                                  <input type="radio" name="ket_obat_obatan" id="ket_obat_obatan" value="0" checked onchange="hitung_biaya();" <?= $isDisabled ?>>
                                   Non Subsidi
 							</div>
 						</div>
@@ -555,7 +476,7 @@
 						<!--	<div class="col-sm-4">-->
 						<!--		<div class="input-group">-->
       <!--                              <span class="input-group-addon" style="background-color: #fcffc4;">Administrasi</span>-->
-      <!--                              <?php echo form_input(array('id'=>'biaya_administrasi','name'=>'biaya_administrasi','type'=>'number','value'=>'','class'=>'form-control','style'=>'text-align:right;', 'onchange'=>'hitung_biaya()','placeholder'=>'0'));?>-->
+      <!--                              <?php echo form_input(array('id'=>'biaya_administrasi','name'=>'biaya_administrasi','type'=>'number','value'=>'','class'=>'form-control','style'=>'text-align:right;', $isDisabled.' onchange'=>'hitung_biaya()','placeholder'=>'0'));?>-->
       <!--                              </div>-->
 						<!--	</div>-->
 						<!--	<div class="col-sm-6">-->
@@ -572,13 +493,18 @@
 							<div class="col-sm-4">
 								<div class="input-group">
                                     <span class="input-group-addon" style="background-color: #fcffc4;">Total Biaya</span>
-                                    <?php echo form_input(array('id'=>'biaya_total','name'=>'biaya_total','type'=>'number','value'=>'','class'=>'form-control','readonly'=>'readonly','style'=>'text-align:right;','placeholder'=>'0'));?>
+                                    <?php echo form_input(array('id'=>'biaya_total','name'=>'biaya_total','type'=>'number','value'=>'','class'=>'form-control','readonly'=>'readonly','style'=>'text-align:right;',$isDisabled.' placeholder'=>'0'));?>
                                 </div>
 							</div>
 						</div>
 						<hr />
                         <div class="form-group">
-							<div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <input type="checkbox" name="is_final" id="is_final" value="1">
+                                &nbsp;
+                                <label for="is_final">Simpan Final</label>
+                            </div>
+							<div class="col-sm-6">
 								<div align="right">
 									<input type="button" class="btn btn-info" onclick="tab1Show();" value="Kembali" />
                                     <script type="text/javascript"> 
@@ -860,6 +786,14 @@ $(document).ready(function() {
 	var add_button_obat      = $("#add_field_button_obat");
     
     var x = 1; //initlal text box count
+    $(".kodeObat").trigger('change')
+    setDetaultJml()
+    setDetaultTotalObat()
+
+    $("#subsidi_harga").trigger('change')
+    $("#biaya_pemeriksaan").trigger('change')
+    $("#biaya_obat_obatan").trigger('change')
+    // $("#select_tindakan").trigger('change')
     $(add_button_cek_fisik).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
@@ -1022,8 +956,6 @@ $(document).ready(function() {
                     // var option_anjuran = '';
                     var option_ket = '';
                     var harga = 0;
-                    console.log(obat[i].stok_barang);
-
                     if(obat[i].stok_barang > 0){
                         //Set Jumlah Option
                         if (!isCheckJml){
@@ -1069,6 +1001,7 @@ $(document).ready(function() {
                     
                     // if (!isCheckJml)
                         $("[id^=jml_obat]").eq(x).append(option);
+
                         // $("[id^=anjuran_obat]").eq(x).append(option_anjuran);
                         $("[id^=ket_obat]").eq(x).append(option_ket);
                         
@@ -1095,6 +1028,27 @@ $(document).ready(function() {
         }
         
         display_total_harga();
+    }
+    
+    function setDetaultTotalObat() {
+        var obat_length = $("[id^=obat]").length;
+
+        for(x = 0; x < obat_length; x++){
+            var harga = parseInt($(".kodeObat").eq(x).find(":selected").attr('data-harga'))
+            var jml = parseInt($(".kodeObat").eq(x).attr('data-jml'))
+            var subtotal = harga * jml
+            console.log(harga)
+            $("[id^=harga_obat]").eq(x).val(subtotal);
+        }
+    }
+
+    function setDetaultJml(){
+        var obat_length = $("[id^=obat]").length;
+
+        for(x = 0; x < obat_length; x++){
+            $("[id^=jml_obat]").eq(x).val($(".kodeObat").eq(x).attr('data-jml'));
+        }
+
     }
     
     function display_total_harga(){

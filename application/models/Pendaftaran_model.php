@@ -113,11 +113,12 @@ class Pendaftaran_model extends CI_Model
     }
     
     function json_antrian($id_dokter,$tipe,$isFormKhusus=false){
-        $this->datatables->select('pd.no_pendaftaran,pd.no_rekam_medis,ps.no_id_pasien,ps.nama_lengkap as nama_pasien,k.nama as klinik,d.nama_dokter,pd.dtm_crt as tgl_pendaftaran,(CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "Dalam Proses" ELSE (CASE pd.is_periksa WHEN 0 THEN "Dalam Antrian" END) END) as status, (CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "disabled" END) as status_antrian,tipe_periksa');
+        $this->datatables->select('pd.periksa_1,pr.no_periksa, pd.no_pendaftaran,pd.no_rekam_medis,ps.no_id_pasien,ps.nama_lengkap as nama_pasien,k.nama as klinik,d.nama_dokter,pd.dtm_crt as tgl_pendaftaran,(CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "Dalam Proses" ELSE (CASE pd.is_periksa WHEN 0 THEN "Dalam Antrian" END) END) as status, (CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "disabled" END) as status_antrian,tipe_periksa');
         $this->datatables->from('tbl_pendaftaran pd');
         $this->datatables->join('tbl_pasien ps', 'pd.no_rekam_medis=ps.no_rekam_medis');
         $this->datatables->join('tbl_dokter d', 'pd.id_dokter=d.id_dokter');
         $this->datatables->join('tbl_dokter dd', 'pd.no_pendaftaran=dd.no_pendaftaran', 'left');
+        $this->datatables->join('tbl_periksa pr', 'pd.no_pendaftaran=pr.no_pendaftaran', 'left');
         $this->datatables->join('tbl_klinik k', 'pd.id_klinik = k.id_klinik');
         $whereDokter = $id_dokter ? " and pd.id_dokter = '$id_dokter'" : '';
         $where = "pd.is_periksa = '0' $whereDokter ";
@@ -142,6 +143,8 @@ class Pendaftaran_model extends CI_Model
         }
         else{
             $this->datatables->add_column('action',anchor(site_url('periksamedis/periksa/$1?tipe=$3'),'Periksa','class="btn btn-warning btn-sm $2"'),'no_pendaftaran,status_antrian,tipe_periksa');
+
+            $this->datatables->add_column('action_edit',anchor(site_url('periksamedis/edit?id=$1'),'Periksa','class="btn btn-warning btn-sm"'),'no_periksa');
         }
             
         return $this->datatables->generate();
