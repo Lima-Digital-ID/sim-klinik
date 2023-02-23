@@ -166,9 +166,12 @@ class Periksamedis extends CI_Controller
                         $harga = $harga_obat - $diskon;
                         $total = $post_obat_jml[$i] * $harga;
                         $total_jual += $total;
-    
-                        $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang - ' . $post_obat_jml[$i] . ' where kode_barang="' . $kode_barang . '"');
-                        $insert = $this->Transaksi_obat_model->insert('tbl_inventory_detail', $data_detail);
+                        
+                        if($post_obat[$i]!=''){
+                            $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang - ' . $post_obat_jml[$i] . ' where kode_barang="' . $kode_barang . '"');
+                            $insert = $this->Transaksi_obat_model->insert('tbl_inventory_detail', $data_detail);
+                        }
+
                     }
                 $no_periksa = $this->input->post('no_periksa');
                 $grand_total_obat = $this->input->post('grandtotal_harga');

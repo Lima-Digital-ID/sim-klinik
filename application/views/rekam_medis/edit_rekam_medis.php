@@ -565,7 +565,7 @@
             })
             $("#nameTindakan").val(nameTindakan)
             $("#biaya_tindakan").val(biayaTindakan)
-            console.log(biayaTindakan)
+            // console.log(biayaTindakan)
         })
         $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
         {
@@ -789,7 +789,13 @@ $(document).ready(function() {
     $(".kodeObat").trigger('change')
     setDetaultJml()
     setDetaultTotalObat()
-    $("#select_tindakan").trigger('change')
+    if($("#select_tindakan").val()!=null){
+        $("#select_tindakan").trigger('change')
+    }
+
+    if($(".kodeObat").length == 0){
+        // $(add_button_obat).trigger('click')
+    }
 
     $("#subsidi_harga").trigger('change')
     $("#biaya_pemeriksaan").trigger('change')
@@ -1038,7 +1044,6 @@ $(document).ready(function() {
             var harga = parseInt($(".kodeObat").eq(x).find(":selected").attr('data-harga'))
             var jml = parseInt($(".kodeObat").eq(x).attr('data-jml'))
             var subtotal = harga * jml
-            console.log(harga)
             $("[id^=harga_obat]").eq(x).val(subtotal);
         }
     }
