@@ -42,7 +42,8 @@ class Tbl_pasien_model extends CI_Model
         $this->db->update($this->table, $data);
     }
 
-    function cekkodepasien(){
+    function cekkodepasien()
+    {
         $query = $this->db->query("SELECT MAX(no_rekam_medis) as nrm from tbl_pasien");
         $hasil = $query->row();
         return $hasil->nrm;
@@ -55,16 +56,25 @@ class Tbl_pasien_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
     }
-    
-    function json(){
+
+    function json()
+    {
         $this->datatables->select('nik,no_rekam_medis,no_id_pasien,nama_lengkap,golongan_darah,status_menikah,pekerjaan,alamat,kabupaten,nama_orang_tua_atau_istri,nomer_telepon,riwayat_alergi_obat');
         $this->datatables->from('tbl_pasien');
-        $this->datatables->add_column('action', anchor(site_url('pasien/update/$1'),'<i class="fa fa-pencil-square-o" aria-hidden="true"></i>','class="btn btn-success btn-sm"')." 
-                ".anchor(site_url('pasien/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'no_rekam_medis');
-            
+        $this->datatables->add_column('action', anchor(site_url('pasien/update/$1'), '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>', 'class="btn btn-success btn-sm"') . " 
+                " . anchor(site_url('pasien/delete/$1'), '<i class="fa fa-trash-o" aria-hidden="true"></i>', 'class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'no_rekam_medis');
+
         return $this->datatables->generate();
     }
 
+    function json2()
+    {
+        $this->datatables->select('nik,no_rekam_medis,no_id_pasien,nama_lengkap,golongan_darah,status_menikah,pekerjaan,alamat,kabupaten,nama_orang_tua_atau_istri,nomer_telepon,riwayat_alergi_obat');
+        $this->datatables->from('tbl_pasien');
+        $this->datatables->add_column('action', anchor(site_url('periksamedis/viewRiwayatPasien?tipe=view&id=$1'), 'Lihat', 'class="btn btn-warning btn-sm"'), 'no_rekam_medis');
+
+        return $this->datatables->generate();
+    }
 }
 
 /* End of file Tbl_pasien_model.php */

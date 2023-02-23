@@ -54,6 +54,7 @@
                                                 <th>Nama Dokter</th>
                                                 <th>Tgl Pendaftaran</th>
                                                 <th>Status</th>
+                                                <th>Tujuan Periksa</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -134,6 +135,7 @@
                                                 <th>Nama Dokter</th>
                                                 <th>Tgl Pendaftaran</th>
                                                 <th>Status</th>
+                                                <th>Tujuan Periksa</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -147,7 +149,7 @@
         </div>
     </section>
 </div>
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src=" //code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -200,12 +202,21 @@
                     "data": "tgl_pendaftaran"
                 }, {
                     "data": "status"
+                }, {
+                    "data": "tujuan_periksa"
                 },
                 {
                     "data": "action",
                     "render": function (data, type, row) {
                         if(row.periksa_1 == '0'){
-                            return row.action
+                            if (row.id_tujuan_periksa == 2) {
+                                return '<button>Surat Keterangan Sehat</button>';
+                            } else if (row.id_tujuan_periksa == 7) {
+                                return '<button>Rapid Test</button>';
+                            } else {
+                                return row.action
+                                // return '<a href="<?= site_url('periksamedis/periksa/no_pendaftaran?tipe=tipe_periksa') ?>" class="btn btn-warning btn-sm status_antrian">Periksa</a>';
+                            }
                         }
                         else{
                             return row.action_edit

@@ -3,7 +3,8 @@
     input::-webkit-inner-spin-button {
         /* display: none; <- Crashes Chrome on hover */
         -webkit-appearance: none;
-        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+        margin: 0;
+        /* <-- Apparently some margin are still there even though it's hidden */
     }
 </style>
 
@@ -12,16 +13,16 @@
     <section class="content">
         <div class="row">
             <div class="col-md-12">
-            <?php 
-            if($this->session->flashdata('message')){
-                if($this->session->flashdata('message_type') == 'danger')
-                    echo alert('alert-danger', 'Perhatian', $this->session->flashdata('message'));
-                else if($this->session->flashdata('message_type') == 'success')
-                    echo alert('alert-success', 'Sukses', $this->session->flashdata('message')); 
-                else
-                    echo alert('alert-info', 'Info', $this->session->flashdata('message')); 
-            }
-            ?>
+                <?php
+                if ($this->session->flashdata('message')) {
+                    if ($this->session->flashdata('message_type') == 'danger')
+                        echo alert('alert-danger', 'Perhatian', $this->session->flashdata('message'));
+                    else if ($this->session->flashdata('message_type') == 'success')
+                        echo alert('alert-success', 'Sukses', $this->session->flashdata('message'));
+                    else
+                        echo alert('alert-info', 'Info', $this->session->flashdata('message'));
+                }
+                ?>
             </div>
             <div class="col-md-12">
                 <div class="box box-warning box-solid">
@@ -37,10 +38,10 @@
                                     <th width="30px">No</th>
                                     <!-- <th>No Periksa</th> -->
                                     <!-- <th>No Rekam Medis</th> -->
-                                    <!-- <th>Nama Pasien</th> -->
                                     <th>Tanggal</th>
+                                    <th>Nama Pasien</th>
                                     <th>Diagnosa</th>
-                                    <th>Obat</th>
+                                    <!-- <th>Obat</th> -->
                                     <th>Dokter</th>
                                     <th>Nama Klinik</th>
                                     <!--<th>Tgl Periksa</th>-->
@@ -62,8 +63,7 @@
 <script src="<?php echo base_url('assets/datatables/dataTables.bootstrap.js') ?>"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
-        {
+        $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
             return {
                 "iStart": oSettings._iDisplayStart,
                 "iEnd": oSettings.fnDisplayEnd(),
@@ -79,42 +79,46 @@
             initComplete: function() {
                 var api = this.api();
                 $('#mytable_filter input')
-                .off('.DT')
-                .on('keyup.DT', function(e) {
-                    if (e.keyCode == 13) {
-                        api.search(this.value).draw();
-                    }
-                });
+                    .off('.DT')
+                    .on('keyup.DT', function(e) {
+                        if (e.keyCode == 13) {
+                            api.search(this.value).draw();
+                        }
+                    });
             },
             oLanguage: {
                 sProcessing: "loading..."
             },
             processing: true,
             serverSide: true,
-            ajax: {"url": "../periksamedis/json_riwayat", "type": "POST"},
-            columns: [
-                {
+            ajax: {
+                "url": "../periksamedis/json_riwayat",
+                "type": "POST"
+            },
+            columns: [{
                     "data": "no_rekam_medis",
                     "orderable": false
-                },{
+                }, {
                     "data": "tgl_periksa"
-                },{
+                }, {
+                    "data": "nama_lengkap"
+                }, {
                     "data": "diagnosa"
-                },{
-                    "data": "obat_detail"
-                },{
+                }, {
                     "data": "nama_dokter"
                 },
                 {
                     "data": "klinik"
                 },
                 {
-                    "data" : "action",
+                    "data": "action",
                     "orderable": false,
-                    "className" : "text-center"
+                    "className": "text-center"
                 }
             ],
-            order: [[0, 'asc']],
+            order: [
+                [0, 'asc']
+            ],
             rowCallback: function(row, data, iDisplayIndex) {
                 var info = this.fnPagingInfo();
                 var page = info.iPage;
@@ -143,7 +147,7 @@
         //                 '<div class="text-left">'+arrData[i]['no_rekam_medis']+'</div>',
         //                 '<div class="text-left">'+arrData[i]['nama_pasien']+'</div>',
         //                 '<div class="text-left">'+
-        //                         '<a href="<?=site_url('periksamedis/riwayat_detail/')?>'+arrData[i]['no_rekam_medis']+'" class="btn waves-effect waves-light btn-xs btn-success"><i class="fa fa-money"></i></a> '+
+        //                         '<a href="<?= site_url('periksamedis/riwayat_detail/') ?>'+arrData[i]['no_rekam_medis']+'" class="btn waves-effect waves-light btn-xs btn-success"><i class="fa fa-money"></i></a> '+
         //                         '</div>'
         //             ]).draw(false);
         //         }

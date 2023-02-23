@@ -120,6 +120,7 @@ class Pendaftaran_model extends CI_Model
         $this->datatables->join('tbl_dokter dd', 'pd.no_pendaftaran=dd.no_pendaftaran', 'left');
         $this->datatables->join('tbl_periksa pr', 'pd.no_pendaftaran=pr.no_pendaftaran', 'left');
         $this->datatables->join('tbl_klinik k', 'pd.id_klinik = k.id_klinik');
+        $this->datatables->join('tbl_tujuan_periksa tjp', 'pd.id_tujuan_periksa = tjp.id');
         $whereDokter = $id_dokter ? " and pd.id_dokter = '$id_dokter'" : '';
         $where = "pd.is_periksa = '0' $whereDokter ";
         // $this->datatables->where('pd.is_periksa', 0);
@@ -133,15 +134,13 @@ class Pendaftaran_model extends CI_Model
             // $this->datatables->where('pd.tipe_periksa', $tipe);
         }
         $this->datatables->where($where);
-        
-        $this->datatables->add_column('option',"<select data-no='$1' class='form-control optionList'>
-        <option value='1'>Surat Rujukan</option><option value='2'>Blanko Resep</option><option value='3'>Kartu Pasien</option></select>",'no_pendaftaran');
 
-        if($isFormKhusus){
-            $this->datatables->add_column('action',anchor(site_url('form_khusus/preview/$1?act=preview'),'Preview','class="btn btn-warning btn-sm btn-act" data-no="$1" data-form="1"') ." ". anchor(site_url('form_khusus/preview/$1?act=doc'),'Download Doc','class="btn btn-primary btn-sm btn-act" data-no="$1" data-form="1"')." ". anchor(site_url('form_khusus/preview/$1?act=print'),'Print','class="btn btn-success btn-sm btn-act" data-no="$1" data-form="1"'),'no_pendaftaran');
+        $this->datatables->add_column('option', "<select data-no='$1' class='form-control optionList'>
+        <option value='1'>Surat Rujukan</option><option value='2'>Blanko Resep</option><option value='3'>Kartu Pasien</option></select>", 'no_pendaftaran');
 
-        }
-        else{
+        if ($isFormKhusus) {
+            $this->datatables->add_column('action', anchor(site_url('form_khusus/preview/$1?act=preview'), 'Preview', 'class="btn btn-warning btn-sm btn-act" data-no="$1" data-form="1"') . " " . anchor(site_url('form_khusus/preview/$1?act=doc'), 'Download Doc', 'class="btn btn-primary btn-sm btn-act" data-no="$1" data-form="1"') . " " . anchor(site_url('form_khusus/preview/$1?act=print'), 'Print', 'class="btn btn-success btn-sm btn-act" data-no="$1" data-form="1"'), 'no_pendaftaran');
+        } else {
             $this->datatables->add_column('action',anchor(site_url('periksamedis/periksa/$1?tipe=$3'),'Periksa','class="btn btn-warning btn-sm $2"'),'no_pendaftaran,status_antrian,tipe_periksa');
 
             $this->datatables->add_column('action_edit',anchor(site_url('periksamedis/edit?id=$1'),'Periksa','class="btn btn-warning btn-sm"'),'no_periksa');
@@ -149,20 +148,20 @@ class Pendaftaran_model extends CI_Model
             
         return $this->datatables->generate();
     }
-    
+
     // function json_pencarian(){
     //     $this->datatables->select('p.no_rekam_medis,p.nik,p.no_id_pasien,p.nama_lengkap as nama_pasien,p.tanggal_lahir, p.nomer_telepon as no_hp');
     //     $this->datatables->from('tbl_pasien p');
     //     $this->datatables->add_column('action',anchor(site_url('pendaftaran/existing/$1'),'Daftarkan','class="btn btn-warning btn-sm"'),'no_rekam_medis');
-            
+
     //     return $this->datatables->generate();
     // }
-    
+
     // function json_pencarian_by_dokter(){
     //     $this->datatables->select('p.no_rekam_medis,p.nik,p.no_id_pasien,p.nama_lengkap as nama_pasien,p.tanggal_lahir, p.nomer_telepon as no_hp');
     //     $this->datatables->from('tbl_pasien p');
     //     $this->datatables->add_column('action',anchor(site_url('periksamedis/existing/$1'),'Daftarkan','class="btn btn-warning btn-sm"'),'no_rekam_medis');
-            
+
     //     $this->datatables->add_column('action', anchor(site_url('periksamedis/periksa/$1?tipe=$3'), 'Periksa Dokter', 'class="btn btn-warning btn-sm $2"'), 'no_pendaftaran,status_antrian,tipe_periksa');
 
     //     return $this->datatables->generate();
