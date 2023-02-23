@@ -35,9 +35,9 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#medis">Periksa Medis</a></li>
                             <!-- <li><a data-toggle="tab" href="#anak">Imunisasi Anak</a></li> -->
-                            <li><a data-toggle="tab" href="#hamil">Kontrol Kehamilan</a></li>
+                            <!-- <li><a data-toggle="tab" href="#hamil">Kontrol Kehamilan</a></li> -->
                             <!-- <li><a data-toggle="tab" href="#jasa">Jasa Lainnya</a></li> -->
-                            <li><a data-toggle="tab" href="#lab">Periksa LAB</a></li>
+                            <!-- <li><a data-toggle="tab" href="#lab">Periksa LAB</a></li> -->
                         </ul>
                         <br>
                         <div class="tab-content">
@@ -54,6 +54,7 @@
                                                 <th>Nama Dokter</th>
                                                 <th>Tgl Pendaftaran</th>
                                                 <th>Status</th>
+                                                <th>Tujuan Periksa</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -200,14 +201,15 @@
                     "data": "tgl_pendaftaran"
                 }, {
                     "data": "status"
+                }, {
+                    "data": "tujuan_periksa"
                 },
                 {
                     "data": "action",
-                    "render": function (data, type, row) {
-                        if(row.periksa_1 == '0'){
+                    "render": function(data, type, row) {
+                        if (row.periksa_1 == '0') {
                             return row.action
-                        }
-                        else{
+                        } else {
                             return row.action_edit
                         }
                     },
