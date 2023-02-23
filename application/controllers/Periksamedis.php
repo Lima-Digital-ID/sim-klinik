@@ -677,6 +677,15 @@ class Periksamedis extends CI_Controller
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
         $this->load->model('Tbl_sksehat_model');
         $getLastNomor = $this->Tbl_sksehat_model->getLastNomor();
+        $pasien = $this->Tbl_pasien_model->get_by_id($_GET['id']);
+        // tanggal lahir
+        $tanggal = new DateTime($pasien->tanggal_lahir);
+
+        // tanggal hari ini
+        $today = new DateTime('today');
+
+        // tahun
+        $y = $today->diff($tanggal)->y;
         $nomor = 1;
         if (count($getLastNomor) > 0) {
             $getNomor = explode('/', $getLastNomor[0]->nomor);
@@ -685,6 +694,13 @@ class Periksamedis extends CI_Controller
             }
         }
         $data['nomor'] = sprintf("%04s", $nomor);
+        $data['nama'] = $pasien != null ? $pasien->nama_lengkap : set_value('nama');
+        $data['pekerjaan'] = $pasien != null ? $pasien->pekerjaan : set_value('pekerjaan');
+        $data['golongan_darah'] = $pasien != null ? $pasien->golongan_darah : set_value('golongan_darah');
+        $data['alamat'] = $pasien != null ? $pasien->alamat . ' RT ' . $pasien->rt . ' RW ' . $pasien->rw . ', ' . $pasien->kabupaten : set_value('alamat');
+        $data['alamat'] = $pasien != null ? $pasien->alamat . ' RT ' . $pasien->rt . ' RW ' . $pasien->rw . ', ' . $pasien->kabupaten : set_value('alamat');
+        $data['umur'] = $pasien != null ? $y : set_value('umur');
+
         if ($this->form_validation->run() == TRUE) {
             $post = $this->input->post();
             $romawi = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII");
