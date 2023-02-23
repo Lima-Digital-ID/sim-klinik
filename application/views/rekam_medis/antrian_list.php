@@ -208,9 +208,21 @@
                     "data": "action",
                     "render": function(data, type, row) {
                         if (row.periksa_1 == '0') {
-                            return row.action
+                            if (row.id_tujuan_periksa == 2) {
+                                return row.sksehat
+                            } else if (row.id_tujuan_periksa == 7) {
+                                return row.rapid
+                            } else {
+                                return row.action
+                            }
                         } else {
-                            return row.action_edit
+                            if (row.id_tujuan_periksa == 2) {
+                                return row.sksehat
+                            } else if (row.id_tujuan_periksa == 7) {
+                                return row.rapid
+                            } else {
+                                return row.action_edit
+                            }
                         }
                     },
                     "orderable": false,

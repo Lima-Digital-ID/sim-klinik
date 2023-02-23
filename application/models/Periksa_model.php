@@ -85,12 +85,12 @@ class Periksa_model extends CI_Model
 
     function insert($data, $data_d_alkes, $data_d_obat, $data_d_fisik)
     {
-        if($data!=null){
+        if ($data != null) {
             $this->db->insert($this->table, $data);
         }
-        
-        for($i = 0; $i < count($data_d_alkes); $i++){
-            $this->db->insert('tbl_periksa_d_alkes',$data_d_alkes[$i]);
+
+        for ($i = 0; $i < count($data_d_alkes); $i++) {
+            $this->db->insert('tbl_periksa_d_alkes', $data_d_alkes[$i]);
         }
 
         for ($i = 0; $i < count($data_d_obat); $i++) {
@@ -208,9 +208,17 @@ class Periksa_model extends CI_Model
     {
         $this->db->select('tbl_periksa.*, tbl_pendaftaran.id_klinik, tbl_pasien.nama_lengkap, tbl_pasien.alamat, tbl_pasien.kabupaten, tbl_pasien.rt, tbl_pasien.rw');
         $this->datatables->from('tbl_periksa');
-        $this->datatables->join('tbl_pasien','tbl_periksa.no_rekam_medis=tbl_pasien.no_rekam_medis','left');
-        $this->datatables->join('tbl_pendaftaran','tbl_periksa.no_pendaftaran=tbl_pendaftaran.no_pendaftaran','left');
+        $this->datatables->join('tbl_pasien', 'tbl_periksa.no_rekam_medis=tbl_pasien.no_rekam_medis', 'left');
+        $this->datatables->join('tbl_pendaftaran', 'tbl_periksa.no_pendaftaran=tbl_pendaftaran.no_pendaftaran', 'left');
         $this->db->where('tbl_periksa.no_periksa', $id);
+        return $this->db->get($this->table)->row();
+    }
+
+    // get data by id
+    function get_by_id_limit_1($id)
+    {
+        $this->db->order_by('no_pendaftaran', $this->order);
+        $this->db->where('no_pendaftaran', $id);
         return $this->db->get($this->table)->row();
     }
 }
