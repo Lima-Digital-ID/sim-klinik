@@ -551,8 +551,10 @@ class Periksamedis extends CI_Controller
                 $this->db->join('tbl_inventory i','d.id_inventory = i.id_inventory');
                 $this->db->where('i.no_periksa',$this->input->post('no_periksa'));
                 $oldInventoryDetail = $this->db->get()->result();
-                $oldIdInventory = $oldInventoryDetail[0]->id_inventory;
+                $oldIdInventory = "";
+                
                 foreach ($oldInventoryDetail as $key => $value) {
+                    $oldIdInventory = $value->id_inventory;
                     $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang + ' . $value->jumlah . ' where kode_barang="' . $value->kode_barang . '"');
 
                     $this->db->delete('tbl_inventory_detail', ['id_inventory_detail' => $value->id_inventory_detail]);
@@ -785,19 +787,21 @@ class Periksamedis extends CI_Controller
                 $url = "periksamedis";
             }
             else{
-                'periksamedis/edit?id='.$_GET['id'];
+                $url = 'periksamedis/edit?id='.$_GET['id'];
             }
 
             $this->db->delete('tbl_periksa_diagnosa',['no_periksa' => $_GET['id']]);
 
             //Insert Periksa Diagnosa
-            foreach ($_POST['id_diagnosa'] as $id) {
-                $arr = array(
-                    'no_periksa' => $this->input->post('no_periksa'),
-                    'id_diagnosa' => $id
-                );
-
-                $this->Tbl_periksa_diagnosa_model->insert($arr);
+            if(count($_POST['id_diagnosa']) != 0 && $_POST['id_diagnosa'] != null ){
+                foreach ($_POST['id_diagnosa'] as $id) {
+                    $arr = array(
+                        'no_periksa' => $this->input->post('no_periksa'),
+                        'id_diagnosa' => $id
+                    );
+    
+                    $this->Tbl_periksa_diagnosa_model->insert($arr);
+                }
             }
 
             //Set session sukses
