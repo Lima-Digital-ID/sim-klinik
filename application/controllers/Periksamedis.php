@@ -869,12 +869,13 @@ class Periksamedis extends CI_Controller
                 $this->db->where('d.id_akun',64);
                 $this->data['subsidi_obat'] = $this->db->get()->row();
     
-                $periksaTindakan = $this->db->get_where('tbl_periksa_tindakan',['no_periksa',$pasien->no_periksa])->result();
+                $periksaTindakan = $this->db->get_where('tbl_periksa_tindakan',['no_periksa' => $pasien->no_periksa])->result();
     
                 $this->data['periksa_tindakan'] = [];
                 foreach ($periksaTindakan as $key => $value) {
                     array_push($this->data['periksa_tindakan'], $value->kode_tindakan);
                 }
+
             }
             $this->data['anamnesies'] = $this->get_master_ref($this->master_ref_code_anamnesi);
             $this->data['alergi_obat'] = $this->get_master_ref($this->master_ref_code_alergiobat);

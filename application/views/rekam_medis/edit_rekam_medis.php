@@ -789,6 +789,7 @@ $(document).ready(function() {
     $(".kodeObat").trigger('change')
     setDetaultJml()
     setDetaultTotalObat()
+    $("#select_tindakan").trigger('change')
 
     $("#subsidi_harga").trigger('change')
     $("#biaya_pemeriksaan").trigger('change')
