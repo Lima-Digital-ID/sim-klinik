@@ -428,7 +428,6 @@
         }).success(function(data) {
             var json = data,
                 obj = JSON.parse(json);
-            console.log(data);
             $('#no_rekam_medis').val(obj.no_rekam_medis);
             $('#nama_lengkap').val(obj.nama_lengkap);
             $('#pekerjaan').val(obj.pekerjaan);
@@ -441,6 +440,7 @@
             $('#nomor_telepon').val(obj.nomor_telepon);
             $('#golongan_darah').val(obj.golongan_darah);
             $('#status_menikah').val(obj.status_menikah);
+            $('#tanggal_lahir').val(obj.tanggal_lahir);
 
             if (obj.no_rekam_medis == null)
                 $('#no_rekam_medis').val("<?php echo $no_rekam_medis_default; ?>");

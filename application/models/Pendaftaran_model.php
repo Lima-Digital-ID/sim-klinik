@@ -111,9 +111,10 @@ class Pendaftaran_model extends CI_Model
 
         return $this->datatables->generate();
     }
-    
-    function json_antrian($id_dokter,$tipe,$isFormKhusus=false){
-        $this->datatables->select('pd.periksa_1,pr.no_periksa, pd.no_pendaftaran,pd.no_rekam_medis,ps.no_id_pasien,ps.nama_lengkap as nama_pasien,k.nama as klinik,d.nama_dokter,pd.dtm_crt as tgl_pendaftaran,(CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "Dalam Proses" ELSE (CASE pd.is_periksa WHEN 0 THEN "Dalam Antrian" END) END) as status, (CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "disabled" END) as status_antrian,tipe_periksa');
+
+    function json_antrian($id_dokter, $tipe, $isFormKhusus = false)
+    {
+        $this->datatables->select('pd.periksa_1,pr.no_periksa, pd.no_pendaftaran,pd.no_rekam_medis,ps.no_id_pasien,ps.nama_lengkap as nama_pasien,k.nama as klinik,d.nama_dokter,pd.dtm_crt as tgl_pendaftaran,(CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "Dalam Proses" ELSE (CASE pd.is_periksa WHEN 0 THEN "Dalam Antrian" END) END) as status, (CASE dd.no_pendaftaran WHEN pd.no_pendaftaran THEN "disabled" END) as status_antrian,tipe_periksa,  tjp.name as tujuan_periksa, pd.id_tujuan_periksa');
         $this->datatables->from('tbl_pendaftaran pd');
         $this->datatables->join('tbl_pasien ps', 'pd.no_rekam_medis=ps.no_rekam_medis');
         $this->datatables->join('tbl_dokter d', 'pd.id_dokter=d.id_dokter');
@@ -141,11 +142,11 @@ class Pendaftaran_model extends CI_Model
         if ($isFormKhusus) {
             $this->datatables->add_column('action', anchor(site_url('form_khusus/preview/$1?act=preview'), 'Preview', 'class="btn btn-warning btn-sm btn-act" data-no="$1" data-form="1"') . " " . anchor(site_url('form_khusus/preview/$1?act=doc'), 'Download Doc', 'class="btn btn-primary btn-sm btn-act" data-no="$1" data-form="1"') . " " . anchor(site_url('form_khusus/preview/$1?act=print'), 'Print', 'class="btn btn-success btn-sm btn-act" data-no="$1" data-form="1"'), 'no_pendaftaran');
         } else {
-            $this->datatables->add_column('action',anchor(site_url('periksamedis/periksa/$1?tipe=$3'),'Periksa','class="btn btn-warning btn-sm $2"'),'no_pendaftaran,status_antrian,tipe_periksa');
+            $this->datatables->add_column('action', anchor(site_url('periksamedis/periksa/$1?tipe=$3'), 'Periksa', 'class="btn btn-warning btn-sm $2"'), 'no_pendaftaran,status_antrian,tipe_periksa');
 
-            $this->datatables->add_column('action_edit',anchor(site_url('periksamedis/edit?id=$1'),'Periksa','class="btn btn-warning btn-sm"'),'no_periksa');
+            $this->datatables->add_column('action_edit', anchor(site_url('periksamedis/edit?id=$1'), 'Periksa', 'class="btn btn-warning btn-sm"'), 'no_periksa');
         }
-            
+
         return $this->datatables->generate();
     }
 
