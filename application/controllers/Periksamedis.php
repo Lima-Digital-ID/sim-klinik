@@ -40,7 +40,7 @@ class Periksamedis extends CI_Controller
         $this->id_dokter = $this->session->userdata('id_dokter');
         $this->id_klinik = $this->session->userdata('id_klinik');
         $dokter = $this->Tbl_dokter_model->get_by_id($this->id_dokter);
-        $this->no_pendaftaran = $dokter != null ? $dokter->no_pendaftaran : isset($_GET['no_daftar']) ? $_GET['no_daftar'] : null;
+        $this->no_pendaftaran = $dokter != null ? $dokter->no_pendaftaran : (isset($_GET['no_daftar']) ? $_GET['no_daftar'] : null);
     }
 
     public function index()
