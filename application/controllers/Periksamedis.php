@@ -57,105 +57,74 @@ class Periksamedis extends CI_Controller
 
         $this->_rules();
         $data_pendaftaran = $this->Pendaftaran_model->get_by_id($this->no_pendaftaran);
-        if ($data_pendaftaran->tipe_periksa == '1' || $data_pendaftaran->tipe_periksa == '4') {
-            $data_pasien = $this->Tbl_pasien_model->get_by_id($data_pendaftaran->no_rekam_medis);
-            $date_now = date('Ymd', time());
-            $data_antrian = $this->Pendaftaran_model->get_next_antrian($this->id_dokter);
+        if ($data_pendaftaran->id_tujuan_periksa == 2) {
+            redirect(site_url('periksamedis/sksehat?id=' . $data_pendaftaran->no_rekam_medis));
+        } else if ($data_pendaftaran->id_tujuan_periksa == 7) {
+            echo 'ccd';
+        } else {
+            if ($data_pendaftaran->tipe_periksa == '1' || $data_pendaftaran->tipe_periksa == '4') {
+                $data_pasien = $this->Tbl_pasien_model->get_by_id($data_pendaftaran->no_rekam_medis);
+                $date_now = date('Ymd', time());
+                $data_antrian = $this->Pendaftaran_model->get_next_antrian($this->id_dokter);
 
-            if ($this->form_validation->run() == TRUE) {
+                if ($this->form_validation->run() == TRUE) {
 
-                $obat_detail_value = '';
-                $obat_detail = $this->input->post('obat');
-                if ($obat_detail != null) {
-                    for ($i = 0; $i < count($obat_detail); $i++) {
-                        if ($obat_detail[$i] != '') {
-                            $nama_obat = $this->Tbl_obat_alkes_bhp_model->get_by_id($obat_detail[$i])->nama_barang;
+                    $obat_detail_value = '';
+                    $obat_detail = $this->input->post('obat');
+                    if ($obat_detail != null) {
+                        for ($i = 0; $i < count($obat_detail); $i++) {
+                            if ($obat_detail[$i] != '') {
+                                $nama_obat = $this->Tbl_obat_alkes_bhp_model->get_by_id($obat_detail[$i])->nama_barang;
 
-                            $obat_detail_value .= $nama_obat . ', ';
+                                $obat_detail_value .= $nama_obat . ', ';
+                            }
                         }
                     }
-                }
-                $sktNomor = $this->input->post('nomor_skt') . "/" . date('m') . "/KR/SK/" . date('y');
+                    $sktNomor = $this->input->post('nomor_skt') . "/" . date('m') . "/KR/SK/" . date('y');
 
-                $data_periksa = array(
-                    'no_periksa' => $this->input->post('no_periksa'),
-                    'no_pendaftaran' => $data_pendaftaran->no_pendaftaran,
-                    'no_rekam_medis' => $data_pendaftaran->no_rekam_medis,
-                    'anamnesi' => rtrim($this->input->post('anamnesi'), ", "),
-                    'diagnosa' => rtrim($this->input->post('diagnosa'), ", "),
-                    'cek_fisik' => rtrim($this->input->post('cek_fisik'), ", "),
-                    'tindakan' => rtrim($this->input->post('tindakan'), ", "),
-                    'is_surat_ket_sakit' => $this->input->post('is_cetak_surat') != null ? $this->input->post('is_cetak_surat') : 0,
-                    'nomor_skt' => $sktNomor,
-                    'tujuan_surat' => $this->input->post('is_cetak_surat') == 1 ? $this->input->post('tujuan_surat') : '',
-                    'tanggal_mulai' => $this->input->post('is_cetak_surat') == 1 ? $this->input->post('tanggal_mulai') : null,
-                    'lama_istirahat_surat' => $this->input->post('is_cetak_surat') == 1 ? $this->input->post('lama_istirahat_surat') : 0,
-                    'id_dokter' => $this->id_dokter,
-                    'note_dokter' => $this->input->post('note_dokter'),
-                    'note_apoteker' => $this->input->post('note_apoteker'),
-                    'obat_detail' => rtrim($obat_detail_value, ", "),
-                );
-
-                $post_alkes = $this->input->post('alat_kesehatan');
-                $post_alkes_jml = $this->input->post('jml_alat_kesehatan');
-                $data_periksa_d_alkes = array();
-
-                if ($post_alkes != null) {
-                    for ($i = 0; $i < count($post_alkes); $i++) {
-                        if ($post_alkes[$i] != null || $post_alkes[$i] != '') {
-                            $data_periksa_d_alkes[] = array(
-                                'no_periksa' => $this->input->post('no_periksa'),
-                                'kode_barang' => $post_alkes[$i],
-                                'jumlah' => $post_alkes_jml[$i],
-                            );
-
-                            //Update stok alkes
-                            // $kode_barang = $post_alkes[$i];
-                            // $alkes = $this->Tbl_obat_alkes_bhp_model->get_by_id($kode_barang);
-                            // $stok_sekarang = $alkes->stok_barang;
-                            // $stok_sisa = $stok_sekarang - $post_alkes_jml[$i];
-                            // $this->Tbl_obat_alkes_bhp_model->update($kode_barang,
-                            //     array(
-                            //         'stok_barang' => $stok_sisa
-                            //     )
-                            // );
-                        }
-                    }
-                }
-                //input inventory barang
-                $kode_receipt = 'RCP' . time();
-                $data = array(
-                    'id_inventory'  => $kode_receipt,
-                    'no_periksa'  => $this->input->post('no_periksa'),
-                    'inv_type'      => 'TRX_STUFF',
-                    'id_klinik'     => $this->id_klinik,
-                );
-
-                $insert = $this->Transaksi_obat_model->insert('tbl_inventory', $data);
-                $dataobat = array();
-                foreach ($this->Tbl_obat_alkes_bhp_model->get_all_obat($this->id_klinik) as $obat) {
-                    $dataobat[] = array(
-                        'id' => $obat->kode_barang,
-                        'harga' => $obat->harga,
-                        'diskon' => $obat->diskon,
-                        'tgl_exp' => $obat->tgl_exp,
+                    $data_periksa = array(
+                        'no_periksa' => $this->input->post('no_periksa'),
+                        'no_pendaftaran' => $data_pendaftaran->no_pendaftaran,
+                        'no_rekam_medis' => $data_pendaftaran->no_rekam_medis,
+                        'anamnesi' => rtrim($this->input->post('anamnesi'), ", "),
+                        'diagnosa' => rtrim($this->input->post('diagnosa'), ", "),
+                        'cek_fisik' => rtrim($this->input->post('cek_fisik'), ", "),
+                        'tindakan' => rtrim($this->input->post('tindakan'), ", "),
+                        'is_surat_ket_sakit' => $this->input->post('is_cetak_surat') != null ? $this->input->post('is_cetak_surat') : 0,
+                        'nomor_skt' => $sktNomor,
+                        'tujuan_surat' => $this->input->post('is_cetak_surat') == 1 ? $this->input->post('tujuan_surat') : '',
+                        'tanggal_mulai' => $this->input->post('is_cetak_surat') == 1 ? $this->input->post('tanggal_mulai') : null,
+                        'lama_istirahat_surat' => $this->input->post('is_cetak_surat') == 1 ? $this->input->post('lama_istirahat_surat') : 0,
+                        'id_dokter' => $this->id_dokter,
+                        'note_dokter' => $this->input->post('note_dokter'),
+                        'note_apoteker' => $this->input->post('note_apoteker'),
+                        'obat_detail' => rtrim($obat_detail_value, ", "),
                     );
-                }
 
-                $post_obat = $this->input->post('obat');
-                $post_obat_jml = $this->input->post('jml_obat');
-                $post_obat_anjuran = $this->input->post('anjuran_obat');
-                $post_obat_ket = $this->input->post('ket_obat');
-                $post_obat_penggunaan = $this->input->post('kegunaan_obat');
-                $total_jual = 0;
-                for ($i = 0; $i < count($post_obat); $i++) {
-                    $harga_obat = $tgl_exp = $diskon = 0;
-                    $kode_barang = $post_obat[$i];
-                    for ($j = 0; $j < count($dataobat); $j++) {
-                        if ($kode_barang == $dataobat[$j]['id']) {
-                            $harga_obat = $dataobat[$j]['harga'];
-                            $diskon = $dataobat[$j]['diskon'];
-                            $tgl_exp = $dataobat[$j]['tgl_exp'];
+                    $post_alkes = $this->input->post('alat_kesehatan');
+                    $post_alkes_jml = $this->input->post('jml_alat_kesehatan');
+                    $data_periksa_d_alkes = array();
+
+                    if ($post_alkes != null) {
+                        for ($i = 0; $i < count($post_alkes); $i++) {
+                            if ($post_alkes[$i] != null || $post_alkes[$i] != '') {
+                                $data_periksa_d_alkes[] = array(
+                                    'no_periksa' => $this->input->post('no_periksa'),
+                                    'kode_barang' => $post_alkes[$i],
+                                    'jumlah' => $post_alkes_jml[$i],
+                                );
+
+                                //Update stok alkes
+                                // $kode_barang = $post_alkes[$i];
+                                // $alkes = $this->Tbl_obat_alkes_bhp_model->get_by_id($kode_barang);
+                                // $stok_sekarang = $alkes->stok_barang;
+                                // $stok_sisa = $stok_sekarang - $post_alkes_jml[$i];
+                                // $this->Tbl_obat_alkes_bhp_model->update($kode_barang,
+                                //     array(
+                                //         'stok_barang' => $stok_sisa
+                                //     )
+                                // );
+                            }
                         }
                         $data_detail = array(
                             'id_inventory' => $kode_receipt,
@@ -175,322 +144,359 @@ class Periksamedis extends CI_Controller
                         }
 
                     }
-                    $data_detail = array();
-                    $data_detail = array(
-                        'id_inventory' => $kode_receipt,
-                        'kode_barang' => $kode_barang,
-                        'jumlah' => $post_obat_jml[$i],
-                        'harga' => $harga_obat,
-                        'diskon' => $diskon,
-                        'tgl_exp' => $tgl_exp,
+                    //input inventory barang
+                    $kode_receipt = 'RCP' . time();
+                    $data = array(
+                        'id_inventory'  => $kode_receipt,
+                        'no_periksa'  => $this->input->post('no_periksa'),
+                        'inv_type'      => 'TRX_STUFF',
+                        'id_klinik'     => $this->id_klinik,
                     );
-                    $harga = $harga_obat - $diskon;
-                    $total = $post_obat_jml[$i] * $harga;
-                    $total_jual += $total;
 
-                    $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang - ' . $post_obat_jml[$i] . ' where kode_barang="' . $kode_barang . '"');
-                    $insert = $this->Transaksi_obat_model->insert('tbl_inventory_detail', $data_detail);
-                }
-                $no_periksa = $this->input->post('no_periksa');
-                $grand_total_obat = $this->input->post('grandtotal_harga');
-                $subsidi_obat = $this->input->post('subsidi_harga');
-                $total_jual_obat = $this->input->post('total_harga');
-
-                $this->jurnal_otomatis_obat($total_jual_obat, $subsidi_obat, $grand_total_obat, $no_periksa, $total_jual); //jurnal otomatis akuntansi untuk pendapatan
-
-                // $biaya_pemeriksaan=$this->input->post('biaya_pemeriksaan');
-                // $biaya_tindakan=$this->input->post('biaya_tindakan');
-                // $this->jurnal_otomatis_pemeriksaan($biaya_tindakan, $biaya_pemeriksaan, $no_periksa);//jurnal otomatis akuntansi untuk pendapatan pemeriksaan
-                // $this->jurnal_otomatis(39, $total_jual);
-
-                $data_periksa_d_obat = array();
-                for ($i = 0; $i < count($post_obat); $i++) {
-                    if ($post_obat[$i] != null || $post_obat[$i] != '') {
-                        $data_periksa_d_obat[] = array(
-                            'no_periksa' => $this->input->post('no_periksa'),
-                            'kode_barang' => $post_obat[$i],
-                            'jumlah' => $post_obat_jml[$i],
-                            'anjuran' => $post_obat_anjuran[$i],
-                            'keterangan' => $post_obat_ket[$i],
-                            'penggunaan_obat' => $post_obat_penggunaan[$i]
+                    $insert = $this->Transaksi_obat_model->insert('tbl_inventory', $data);
+                    $dataobat = array();
+                    foreach ($this->Tbl_obat_alkes_bhp_model->get_all_obat($this->id_klinik) as $obat) {
+                        $dataobat[] = array(
+                            'id' => $obat->kode_barang,
+                            'harga' => $obat->harga,
+                            'diskon' => $obat->diskon,
+                            'tgl_exp' => $obat->tgl_exp,
                         );
                     }
-                }
 
-                // $post_cek_fisik = $this->input->post('cek_fisik');
-                // $post_cek_fisik_value = $this->input->post('cek_fisik_value');
-                $data_periksa_d_fisik = array(
-                    array(
-                        'no_periksa' => $this->input->post('no_periksa'),
-                        'nama_periksa_fisik' => 'Berat Badan',
-                        'nilai_periksa_fisik' => $this->input->post('berat_badan'),
-                    ),
-                    array(
-                        'no_periksa' => $this->input->post('no_periksa'),
-                        'nama_periksa_fisik' => 'Tinggi Badan',
-                        'nilai_periksa_fisik' => $this->input->post('tinggi_badan'),
-                    ),
-                    array(
-                        'no_periksa' => $this->input->post('no_periksa'),
-                        'nama_periksa_fisik' => 'Tekanan Darah',
-                        'nilai_periksa_fisik' => $this->input->post('tekanan_darah'),
-                    ),
-                    array(
-                        'no_periksa' => $this->input->post('no_periksa'),
-                        'nama_periksa_fisik' => 'Suhu Tubuh',
-                        'nilai_periksa_fisik' => $this->input->post('suhu_tubuh'),
-                    ),
-                    array(
-                        'no_periksa' => $this->input->post('no_periksa'),
-                        'nama_periksa_fisik' => 'Saturasi Oksigen',
-                        'nilai_periksa_fisik' => $this->input->post('saturasi_oksigen'),
-                    ),
-                );
-                // for ($i = 0; $i < count($post_cek_fisik); $i++) {
-                //     if ($post_cek_fisik[$i] != null || $post_cek_fisik[$i] != '') {
-                //         $data_periksa_d_fisik[] = array(
-                //             'no_periksa' => $this->input->post('no_periksa'),
-                //             'nama_periksa_fisik' => $post_cek_fisik[$i],
-                //             'nilai_periksa_fisik' => $post_cek_fisik_value[$i],
-                //         );
-                //     }
-                // }
+                    $post_obat = $this->input->post('obat');
+                    $post_obat_jml = $this->input->post('jml_obat');
+                    $post_obat_anjuran = $this->input->post('anjuran_obat');
+                    $post_obat_ket = $this->input->post('ket_obat');
+                    $post_obat_penggunaan = $this->input->post('kegunaan_obat');
+                    $total_jual = 0;
+                    for ($i = 0; $i < count($post_obat); $i++) {
+                        $harga_obat = $tgl_exp = $diskon = 0;
+                        $kode_barang = $post_obat[$i];
+                        for ($j = 0; $j < count($dataobat); $j++) {
+                            if ($kode_barang == $dataobat[$j]['id']) {
+                                $harga_obat = $dataobat[$j]['harga'];
+                                $diskon = $dataobat[$j]['diskon'];
+                                $tgl_exp = $dataobat[$j]['tgl_exp'];
+                            }
+                        }
+                        $data_detail = array();
+                        $data_detail = array(
+                            'id_inventory' => $kode_receipt,
+                            'kode_barang' => $kode_barang,
+                            'jumlah' => $post_obat_jml[$i],
+                            'harga' => $harga_obat,
+                            'diskon' => $diskon,
+                            'tgl_exp' => $tgl_exp,
+                        );
+                        $harga = $harga_obat - $diskon;
+                        $total = $post_obat_jml[$i] * $harga;
+                        $total_jual += $total;
 
-                //Insert into tbl_periksa
-                $this->Periksa_model->insert($data_periksa, $data_periksa_d_alkes, $data_periksa_d_obat, $data_periksa_d_fisik);
+                        $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang - ' . $post_obat_jml[$i] . ' where kode_barang="' . $kode_barang . '"');
+                        $insert = $this->Transaksi_obat_model->insert('tbl_inventory_detail', $data_detail);
+                    }
+                    $no_periksa = $this->input->post('no_periksa');
+                    $grand_total_obat = $this->input->post('grandtotal_harga');
+                    $subsidi_obat = $this->input->post('subsidi_harga');
+                    $total_jual_obat = $this->input->post('total_harga');
 
-                //TRANSAKSI
-                $date_now_trx = date('Y-m-d', time());
-                $data_transkasi = array(
-                    'kode_transaksi' => 'PRKS',
-                    'id_klinik' => $data_pendaftaran->id_klinik,
-                    'no_transaksi' => $this->input->post('no_periksa'),
-                    'tgl_transaksi' => $date_now_trx,
-                    'status_transaksi' => 0,
-                );
+                    $this->jurnal_otomatis_obat($total_jual_obat, $subsidi_obat, $grand_total_obat, $no_periksa, $total_jual); //jurnal otomatis akuntansi untuk pendapatan
 
-                $data_transaksi_d = array(
-                    array(
+                    // $biaya_pemeriksaan=$this->input->post('biaya_pemeriksaan');
+                    // $biaya_tindakan=$this->input->post('biaya_tindakan');
+                    // $this->jurnal_otomatis_pemeriksaan($biaya_tindakan, $biaya_pemeriksaan, $no_periksa);//jurnal otomatis akuntansi untuk pendapatan pemeriksaan
+                    // $this->jurnal_otomatis(39, $total_jual);
+
+                    $data_periksa_d_obat = array();
+                    for ($i = 0; $i < count($post_obat); $i++) {
+                        if ($post_obat[$i] != null || $post_obat[$i] != '') {
+                            $data_periksa_d_obat[] = array(
+                                'no_periksa' => $this->input->post('no_periksa'),
+                                'kode_barang' => $post_obat[$i],
+                                'jumlah' => $post_obat_jml[$i],
+                                'anjuran' => $post_obat_anjuran[$i],
+                                'keterangan' => $post_obat_ket[$i],
+                                'penggunaan_obat' => $post_obat_penggunaan[$i]
+                            );
+                        }
+                    }
+
+                    // $post_cek_fisik = $this->input->post('cek_fisik');
+                    // $post_cek_fisik_value = $this->input->post('cek_fisik_value');
+                    $data_periksa_d_fisik = array(
+                        array(
+                            'no_periksa' => $this->input->post('no_periksa'),
+                            'nama_periksa_fisik' => 'Berat Badan',
+                            'nilai_periksa_fisik' => $this->input->post('berat_badan'),
+                        ),
+                        array(
+                            'no_periksa' => $this->input->post('no_periksa'),
+                            'nama_periksa_fisik' => 'Tinggi Badan',
+                            'nilai_periksa_fisik' => $this->input->post('tinggi_badan'),
+                        ),
+                        array(
+                            'no_periksa' => $this->input->post('no_periksa'),
+                            'nama_periksa_fisik' => 'Tekanan Darah',
+                            'nilai_periksa_fisik' => $this->input->post('tekanan_darah'),
+                        ),
+                        array(
+                            'no_periksa' => $this->input->post('no_periksa'),
+                            'nama_periksa_fisik' => 'Suhu Tubuh',
+                            'nilai_periksa_fisik' => $this->input->post('suhu_tubuh'),
+                        ),
+                        array(
+                            'no_periksa' => $this->input->post('no_periksa'),
+                            'nama_periksa_fisik' => 'Saturasi Oksigen',
+                            'nilai_periksa_fisik' => $this->input->post('saturasi_oksigen'),
+                        ),
+                    );
+                    // for ($i = 0; $i < count($post_cek_fisik); $i++) {
+                    //     if ($post_cek_fisik[$i] != null || $post_cek_fisik[$i] != '') {
+                    //         $data_periksa_d_fisik[] = array(
+                    //             'no_periksa' => $this->input->post('no_periksa'),
+                    //             'nama_periksa_fisik' => $post_cek_fisik[$i],
+                    //             'nilai_periksa_fisik' => $post_cek_fisik_value[$i],
+                    //         );
+                    //     }
+                    // }
+
+                    //Insert into tbl_periksa
+                    $this->Periksa_model->insert($data_periksa, $data_periksa_d_alkes, $data_periksa_d_obat, $data_periksa_d_fisik);
+
+                    //TRANSAKSI
+                    $date_now_trx = date('Y-m-d', time());
+                    $data_transkasi = array(
+                        'kode_transaksi' => 'PRKS',
+                        'id_klinik' => $data_pendaftaran->id_klinik,
                         'no_transaksi' => $this->input->post('no_periksa'),
-                        'deskripsi' => 'Total Obat-obatan',
-                        'amount_transaksi' => $this->input->post('total_harga'),
-                        'dc' => 'd'
-                    ),
-                    array(
-                        'no_transaksi' => $this->input->post('no_periksa'),
-                        'deskripsi' => 'Subsidi Obat-obatan',
-                        'amount_transaksi' => $this->input->post('ket_obat_obatan') == 0 ? ($this->input->post('subsidi_harga') != '' ? $this->input->post('subsidi_harga') : 0) : $this->input->post('total_harga'),
-                        'dc' => 'c'
-                    ),
-                    array(
-                        'no_transaksi' => $this->input->post('no_periksa'),
-                        'deskripsi' => 'Biaya Pemeriksaan',
-                        'amount_transaksi' => $this->input->post('biaya_pemeriksaan') != '' ? $this->input->post('biaya_pemeriksaan') : 0,
-                        'dc' => 'd'
-                    ),
-                    array(
-                        'no_transaksi' => $this->input->post('no_periksa'),
-                        'deskripsi' => 'Biaya Tindakan',
-                        'amount_transaksi' => $this->input->post('biaya_tindakan') != '' || $this->input->post('biaya_tindakan') != 0 ? $this->input->post('biaya_tindakan') : 0,
-                        'dc' => 'd'
-                    ),
-                    // array(
-                    //     'no_transaksi' => $this->input->post('no_periksa'),
-                    //     'deskripsi' => 'Biaya Administrasi',
-                    //     'amount_transaksi' => $this->input->post('biaya_administrasi') != '' ? $this->input->post('biaya_administrasi') : 0,
-                    //     'dc' => 'd'
-                    // ),
-                );
+                        'tgl_transaksi' => $date_now_trx,
+                        'status_transaksi' => 0,
+                    );
 
-                foreach ($this->input->post('select_tindakan') as $key => $value) {
-                    $this->db->insert('tbl_periksa_tindakan', ['no_periksa' => $this->input->post('no_periksa'), 'kode_tindakan' => $value]);
-                }
+                    $data_transaksi_d = array(
+                        array(
+                            'no_transaksi' => $this->input->post('no_periksa'),
+                            'deskripsi' => 'Total Obat-obatan',
+                            'amount_transaksi' => $this->input->post('total_harga'),
+                            'dc' => 'd'
+                        ),
+                        array(
+                            'no_transaksi' => $this->input->post('no_periksa'),
+                            'deskripsi' => 'Subsidi Obat-obatan',
+                            'amount_transaksi' => $this->input->post('ket_obat_obatan') == 0 ? ($this->input->post('subsidi_harga') != '' ? $this->input->post('subsidi_harga') : 0) : $this->input->post('total_harga'),
+                            'dc' => 'c'
+                        ),
+                        array(
+                            'no_transaksi' => $this->input->post('no_periksa'),
+                            'deskripsi' => 'Biaya Pemeriksaan',
+                            'amount_transaksi' => $this->input->post('biaya_pemeriksaan') != '' ? $this->input->post('biaya_pemeriksaan') : 0,
+                            'dc' => 'd'
+                        ),
+                        array(
+                            'no_transaksi' => $this->input->post('no_periksa'),
+                            'deskripsi' => 'Biaya Tindakan',
+                            'amount_transaksi' => $this->input->post('biaya_tindakan') != '' || $this->input->post('biaya_tindakan') != 0 ? $this->input->post('biaya_tindakan') : 0,
+                            'dc' => 'd'
+                        ),
+                        // array(
+                        //     'no_transaksi' => $this->input->post('no_periksa'),
+                        //     'deskripsi' => 'Biaya Administrasi',
+                        //     'amount_transaksi' => $this->input->post('biaya_administrasi') != '' ? $this->input->post('biaya_administrasi') : 0,
+                        //     'dc' => 'd'
+                        // ),
+                    );
 
-                //Insert into tbl_transaksi
-                $this->Transaksi_model->insert($data_transkasi, $data_transaksi_d);
+                    foreach ($this->input->post('select_tindakan') as $key => $value) {
+                        $this->db->insert('tbl_periksa_tindakan', ['no_periksa' => $this->input->post('no_periksa'), 'kode_tindakan' => $value]);
+                    }
 
-                if ($this->input->post('is_final') == '1') {
-                    //Set status pendaftaran is_periksa = 1
+                    //Insert into tbl_transaksi
+                    $this->Transaksi_model->insert($data_transkasi, $data_transaksi_d);
+
+                    if ($this->input->post('is_final') == '1') {
+                        //Set status pendaftaran is_periksa = 1
+                        $this->Pendaftaran_model->update($this->no_pendaftaran, array(
+                            'is_periksa' => 1,
+                            'dtm_upd' => date("Y-m-d H:i:s",  time())
+                        ));
+
+
+                        $this->db->update('tbl_periksa', ['is_periksa' => '1'], ['no_periksa' => $this->input->post('no_periksa')]);
+                    }
+
+                    //Get Next Antrian
+                    $data_antrian = $this->Pendaftaran_model->get_next_antrian($this->id_dokter);
+                    $next_antrian = $data_antrian != null ? $data_antrian->no_pendaftaran : null;
+                    $this->Tbl_dokter_model->update($this->id_dokter, array(
+                        "no_pendaftaran" => $next_antrian,
+                        "dtm_upd" => date("Y-m-d H:i:s",  time())
+                    ));
+
                     $this->Pendaftaran_model->update($this->no_pendaftaran, array(
-                        'is_periksa' => 1,
+                        'periksa_1' => '1',
                         'dtm_upd' => date("Y-m-d H:i:s",  time())
                     ));
 
-
-                    $this->db->update('tbl_periksa', ['is_periksa' => '1'], ['no_periksa' => $this->input->post('no_periksa')]);
-                }
-
-                //Get Next Antrian
-                $data_antrian = $this->Pendaftaran_model->get_next_antrian($this->id_dokter);
-                $next_antrian = $data_antrian != null ? $data_antrian->no_pendaftaran : null;
-                $this->Tbl_dokter_model->update($this->id_dokter, array(
-                    "no_pendaftaran" => $next_antrian,
-                    "dtm_upd" => date("Y-m-d H:i:s",  time())
-                ));
-
-                $this->Pendaftaran_model->update($this->no_pendaftaran, array(
-                    'periksa_1' => '1',
-                    'dtm_upd' => date("Y-m-d H:i:s",  time())
-                ));
-
-                //Set Riwayat Alergi Obat Pasien
-                $pasien = $this->Tbl_pasien_model->get_by_id($data_pendaftaran->no_rekam_medis);
-                if ($pasien != null) {
-                    $this->Tbl_pasien_model->update($data_pendaftaran->no_rekam_medis, array(
-                        'riwayat_alergi_obat' => $this->input->post('riwayat_alergi_obat'),
-                        'dtm_upd' => date("Y-m-d H:i:s",  time())
-                    ));
-                }
-
-
-                //Insert Master Ref Anamnesi
-                $master_ref_anamnesi = $this->split_string($this->input->post('anamnesi'), ',');
-                for ($i = 0; $i < count($master_ref_anamnesi); $i++) {
-                    $master_ref = $this->Master_reference_model->get_by_value($master_ref_anamnesi[$i]['value'], $this->master_ref_code_anamnesi);
-                    if ($master_ref == null) {
-                        $this->Master_reference_model->insert(array(
-                            'master_ref_code' => $this->master_ref_code_anamnesi,
-                            'master_ref_value' => $master_ref_anamnesi[$i]['value'],
-                            'master_ref_name' => $master_ref_anamnesi[$i]['name']
+                    //Set Riwayat Alergi Obat Pasien
+                    $pasien = $this->Tbl_pasien_model->get_by_id($data_pendaftaran->no_rekam_medis);
+                    if ($pasien != null) {
+                        $this->Tbl_pasien_model->update($data_pendaftaran->no_rekam_medis, array(
+                            'riwayat_alergi_obat' => $this->input->post('riwayat_alergi_obat'),
+                            'dtm_upd' => date("Y-m-d H:i:s",  time())
                         ));
                     }
-                }
-                //Insert Master Ref Alergi Obat
-                $master_ref_alergiobat = $this->split_string($this->input->post('riwayat_alergi_obat'), ',');
-                for ($i = 0; $i < count($master_ref_alergiobat); $i++) {
-                    $master_ref = $this->Master_reference_model->get_by_value($master_ref_alergiobat[$i]['value'], $this->master_ref_code_alergiobat);
-                    if ($master_ref == null) {
-                        $this->Master_reference_model->insert(array(
-                            'master_ref_code' => $this->master_ref_code_alergiobat,
-                            'master_ref_value' => $master_ref_alergiobat[$i]['value'],
-                            'master_ref_name' => $master_ref_alergiobat[$i]['name']
-                        ));
+
+
+                    //Insert Master Ref Anamnesi
+                    $master_ref_anamnesi = $this->split_string($this->input->post('anamnesi'), ',');
+                    for ($i = 0; $i < count($master_ref_anamnesi); $i++) {
+                        $master_ref = $this->Master_reference_model->get_by_value($master_ref_anamnesi[$i]['value'], $this->master_ref_code_anamnesi);
+                        if ($master_ref == null) {
+                            $this->Master_reference_model->insert(array(
+                                'master_ref_code' => $this->master_ref_code_anamnesi,
+                                'master_ref_value' => $master_ref_anamnesi[$i]['value'],
+                                'master_ref_name' => $master_ref_anamnesi[$i]['name']
+                            ));
+                        }
                     }
-                }
-                //Insert Master Ref Diagnosa
-                $master_ref_diagnosa = $this->split_string($this->input->post('diagnosa'), ',');
-                for ($i = 0; $i < count($master_ref_diagnosa); $i++) {
-                    $master_ref = $this->Master_reference_model->get_by_value($master_ref_diagnosa[$i]['value'], $this->master_ref_code_diagnosa);
-                    if ($master_ref == null) {
-                        $this->Master_reference_model->insert(array(
-                            'master_ref_code' => $this->master_ref_code_diagnosa,
-                            'master_ref_value' => $master_ref_diagnosa[$i]['value'],
-                            'master_ref_name' => $master_ref_diagnosa[$i]['name']
-                        ));
+                    //Insert Master Ref Alergi Obat
+                    $master_ref_alergiobat = $this->split_string($this->input->post('riwayat_alergi_obat'), ',');
+                    for ($i = 0; $i < count($master_ref_alergiobat); $i++) {
+                        $master_ref = $this->Master_reference_model->get_by_value($master_ref_alergiobat[$i]['value'], $this->master_ref_code_alergiobat);
+                        if ($master_ref == null) {
+                            $this->Master_reference_model->insert(array(
+                                'master_ref_code' => $this->master_ref_code_alergiobat,
+                                'master_ref_value' => $master_ref_alergiobat[$i]['value'],
+                                'master_ref_name' => $master_ref_alergiobat[$i]['name']
+                            ));
+                        }
                     }
-                }
-                //Insert Master Ref Tindakan
-                $master_ref_tindakan = $this->split_string($this->input->post('tindakan'), ',');
-                for ($i = 0; $i < count($master_ref_tindakan); $i++) {
-                    $master_ref = $this->Master_reference_model->get_by_value($master_ref_tindakan[$i]['value'], $this->master_ref_code_tindakan);
-                    if ($master_ref == null) {
-                        $this->Master_reference_model->insert(array(
-                            'master_ref_code' => $this->master_ref_code_tindakan,
-                            'master_ref_value' => $master_ref_tindakan[$i]['value'],
-                            'master_ref_name' => $master_ref_tindakan[$i]['name']
-                        ));
+                    //Insert Master Ref Diagnosa
+                    $master_ref_diagnosa = $this->split_string($this->input->post('diagnosa'), ',');
+                    for ($i = 0; $i < count($master_ref_diagnosa); $i++) {
+                        $master_ref = $this->Master_reference_model->get_by_value($master_ref_diagnosa[$i]['value'], $this->master_ref_code_diagnosa);
+                        if ($master_ref == null) {
+                            $this->Master_reference_model->insert(array(
+                                'master_ref_code' => $this->master_ref_code_diagnosa,
+                                'master_ref_value' => $master_ref_diagnosa[$i]['value'],
+                                'master_ref_name' => $master_ref_diagnosa[$i]['name']
+                            ));
+                        }
                     }
-                }
+                    //Insert Master Ref Tindakan
+                    $master_ref_tindakan = $this->split_string($this->input->post('tindakan'), ',');
+                    for ($i = 0; $i < count($master_ref_tindakan); $i++) {
+                        $master_ref = $this->Master_reference_model->get_by_value($master_ref_tindakan[$i]['value'], $this->master_ref_code_tindakan);
+                        if ($master_ref == null) {
+                            $this->Master_reference_model->insert(array(
+                                'master_ref_code' => $this->master_ref_code_tindakan,
+                                'master_ref_value' => $master_ref_tindakan[$i]['value'],
+                                'master_ref_name' => $master_ref_tindakan[$i]['name']
+                            ));
+                        }
+                    }
 
-                //Insert Periksa Diagnosa
-                foreach ($_POST['id_diagnosa'] as $id) {
-                    $arr = array(
-                        'no_periksa' => $this->input->post('no_periksa'),
-                        'id_diagnosa' => $id
-                    );
+                    //Insert Periksa Diagnosa
+                    foreach ($_POST['id_diagnosa'] as $id) {
+                        $arr = array(
+                            'no_periksa' => $this->input->post('no_periksa'),
+                            'id_diagnosa' => $id
+                        );
 
-                    $this->Tbl_periksa_diagnosa_model->insert($arr);
-                }
-                //Set session sukses
-                $this->session->set_flashdata('message', 'Data pemeriksaan berhasil disimpan, No Pendaftaran ' . $this->no_pendaftaran);
-                $this->session->set_flashdata('message_type', 'success');
+                        $this->Tbl_periksa_diagnosa_model->insert($arr);
+                    }
+                    //Set session sukses
+                    $this->session->set_flashdata('message', 'Data pemeriksaan berhasil disimpan, No Pendaftaran ' . $this->no_pendaftaran);
+                    $this->session->set_flashdata('message_type', 'success');
 
-                redirect(site_url('periksamedis'));
-            } else {
-                $this->data['no_periksa'] = $data_pendaftaran->no_pendaftaran . '/' . $date_now . '/' . $data_pendaftaran->no_rekam_medis;
-                if (isset($data_pasien)) {
-                    $this->data['nama_lengkap'] = $data_pasien->nama_lengkap;
-                    $this->data['alamat'] = $data_pasien->alamat . ' ' . $data_pasien->kabupaten . ' ' . 'RT ' . $data_pasien->rt . ' ' . 'RW ' . $data_pasien->rw;
-                    $this->data['riwayat_alergi_obat'] = $data_pasien->riwayat_alergi_obat;
-                }
-                $this->data['anamnesies'] = $this->get_master_ref($this->master_ref_code_anamnesi);
-                $this->data['alergi_obat'] = $this->get_master_ref($this->master_ref_code_alergiobat);
-                $this->data['diagnosa'] = $this->get_master_ref($this->master_ref_code_diagnosa);
-                // 		$this->data['tindakan'] = $this->get_all_tindakan();
-                $this->data['tindakan'] = $this->get_master_ref($this->master_ref_code_tindakan);
-                $this->data['alkes_option'] = array();
-                $this->data['alkes_option'][''] = 'Pilih Alat Kesehatan';
-                $alkes_opt_js = array();
-                foreach ($this->Tbl_obat_alkes_bhp_model->get_all_alkes($this->id_klinik) as $alkes) {
-                    $this->data['alkes_option'][$alkes->kode_barang] = $alkes->nama_barang;
-                    $alkes_opt_js[] = array(
-                        'value' => $alkes->kode_barang,
-                        'label' => $alkes->nama_barang
-                    );
-                }
-                $this->data['alkes_option_js'] = json_encode($alkes_opt_js);
-
-                $this->data['obat_option'] = array();
-                $this->data['obat_option'][''] = 'Pilih Obat';
-                $obat_opt_js = array();
-                foreach ($this->Tbl_obat_alkes_bhp_model->get_all_obat($this->id_klinik) as $obat) {
-                    $this->data['obat_option'][$obat->kode_barang] = $obat->nama_barang;
-                    $obat_opt_js[] = array(
-                        'value' => $obat->kode_barang,
-                        'label' => $obat->nama_barang
-                    );
-                }
-                // for ($i=0; $i < count($obat_opt_js); $i++) { 
-                //     echo $obat_opt_js[$i]['value'];
-                // }
-                // print_r($obat_opt_js);
-                // exit();
-                $this->data['obat_option_js'] = json_encode($obat_opt_js);
-
-                $this->data['anjuran_obat'] = $this->get_master_ref($this->master_ref_code_anjuranobat);
-
-                $this->data['alkes'] = $this->get_all_alkes();
-                $this->data['obat'] = $this->get_all_obat();
-
-                $this->data['diagnosa_icd10'] = $this->Tbl_diagnosa_icd10_model->getAll();
-                if ($data_pendaftaran->tipe_periksa == '1') {
-                    $tipeTindakan = '1';
+                    redirect(site_url('periksamedis'));
                 } else {
-                    $tipeTindakan = '2';
-                }
-                $this->data['master_tindakan'] = $this->db->query('select * from tbl_tindakan where tipe = "' . $tipeTindakan . '" order by cast(kode_tindakan as SIGNED INTEGER) asc ')->result();
+                    $this->data['no_periksa'] = $data_pendaftaran->no_pendaftaran . '/' . $date_now . '/' . $data_pendaftaran->no_rekam_medis;
+                    if (isset($data_pasien)) {
+                        $this->data['nama_lengkap'] = $data_pasien->nama_lengkap;
+                        $this->data['alamat'] = $data_pasien->alamat . ' ' . $data_pasien->kabupaten . ' ' . 'RT ' . $data_pasien->rt . ' ' . 'RW ' . $data_pasien->rw;
+                        $this->data['riwayat_alergi_obat'] = $data_pasien->riwayat_alergi_obat;
+                    }
+                    $this->data['anamnesies'] = $this->get_master_ref($this->master_ref_code_anamnesi);
+                    $this->data['alergi_obat'] = $this->get_master_ref($this->master_ref_code_alergiobat);
+                    $this->data['diagnosa'] = $this->get_master_ref($this->master_ref_code_diagnosa);
+                    // 		$this->data['tindakan'] = $this->get_all_tindakan();
+                    $this->data['tindakan'] = $this->get_master_ref($this->master_ref_code_tindakan);
+                    $this->data['alkes_option'] = array();
+                    $this->data['alkes_option'][''] = 'Pilih Alat Kesehatan';
+                    $alkes_opt_js = array();
+                    foreach ($this->Tbl_obat_alkes_bhp_model->get_all_alkes($this->id_klinik) as $alkes) {
+                        $this->data['alkes_option'][$alkes->kode_barang] = $alkes->nama_barang;
+                        $alkes_opt_js[] = array(
+                            'value' => $alkes->kode_barang,
+                            'label' => $alkes->nama_barang
+                        );
+                    }
+                    $this->data['alkes_option_js'] = json_encode($alkes_opt_js);
 
-                //Set session error
-                if ($this->input->post('no_periksa')) {
-                    $this->session->set_flashdata('message', 'Terdapat error input, silahkan cek ulang');
-                    $this->session->set_flashdata('message_type', 'danger');
-                }
-            }
-            $nomor = 1;
-            $getLastNomorSK = $this->Periksa_model->getLastNomor();
-            if (count($getLastNomorSK) > 0) {
-                $getNomor = explode('/', $getLastNomorSK[0]->nomor_skt);
-                if (count($getNomor) == 5) {
-                    $nomor = (int)$getNomor[0] + 1;
-                }
-            }
-            $this->data['nomor_skt'] = sprintf("%04s", $nomor);
-            $this->data['cek_fisik'] = $this->Periksa_model->get_cek_fisik();
+                    $this->data['obat_option'] = array();
+                    $this->data['obat_option'][''] = 'Pilih Obat';
+                    $obat_opt_js = array();
+                    foreach ($this->Tbl_obat_alkes_bhp_model->get_all_obat($this->id_klinik) as $obat) {
+                        $this->data['obat_option'][$obat->kode_barang] = $obat->nama_barang;
+                        $obat_opt_js[] = array(
+                            'value' => $obat->kode_barang,
+                            'label' => $obat->nama_barang
+                        );
+                    }
+                    // for ($i=0; $i < count($obat_opt_js); $i++) { 
+                    //     echo $obat_opt_js[$i]['value'];
+                    // }
+                    // print_r($obat_opt_js);
+                    // exit();
+                    $this->data['obat_option_js'] = json_encode($obat_opt_js);
 
-            $this->template->load('template', 'rekam_medis/form_rekam_medis', $this->data);
+                    $this->data['anjuran_obat'] = $this->get_master_ref($this->master_ref_code_anjuranobat);
+
+                    $this->data['alkes'] = $this->get_all_alkes();
+                    $this->data['obat'] = $this->get_all_obat();
+
+                    $this->data['diagnosa_icd10'] = $this->Tbl_diagnosa_icd10_model->getAll();
+                    if ($data_pendaftaran->tipe_periksa == '1') {
+                        $tipeTindakan = '1';
+                    } else {
+                        $tipeTindakan = '2';
+                    }
+                    $this->data['master_tindakan'] = $this->db->query('select * from tbl_tindakan where tipe = "' . $tipeTindakan . '" order by cast(kode_tindakan as SIGNED INTEGER) asc ')->result();
+
+                    //Set session error
+                    if ($this->input->post('no_periksa')) {
+                        $this->session->set_flashdata('message', 'Terdapat error input, silahkan cek ulang');
+                        $this->session->set_flashdata('message_type', 'danger');
+                    }
+                }
+                $nomor = 1;
+                $getLastNomorSK = $this->Periksa_model->getLastNomor();
+                if (count($getLastNomorSK) > 0) {
+                    $getNomor = explode('/', $getLastNomorSK[0]->nomor_skt);
+                    if (count($getNomor) == 5) {
+                        $nomor = (int)$getNomor[0] + 1;
+                    }
+                }
+                $this->data['nomor_skt'] = sprintf("%04s", $nomor);
+                $this->data['cek_fisik'] = $this->Periksa_model->get_cek_fisik();
+
+                $this->template->load('template', 'rekam_medis/form_rekam_medis', $this->data);
+            }
+            // else if($data_pendaftaran->tipe_periksa=='2'){
+            //     redirect(base_url()."periksamedis/imunisasi");
+            // }
+            // else if($data_pendaftaran->tipe_periksa=='3'){
+            //     redirect(base_url()."periksamedis/kontrol_kehamilan");
+            // }
+            // else if($data_pendaftaran->tipe_periksa=='5'){
+            //     redirect(site_url('periksamedis/periksa_jasa/'));
+            // }
+            // else if($data_pendaftaran->tipe_periksa=='6'){
+            //     redirect(site_url('periksamedis/periksa_lab/'));
+            // }
         }
-        // else if($data_pendaftaran->tipe_periksa=='2'){
-        //     redirect(base_url()."periksamedis/imunisasi");
-        // }
-        // else if($data_pendaftaran->tipe_periksa=='3'){
-        //     redirect(base_url()."periksamedis/kontrol_kehamilan");
-        // }
-        // else if($data_pendaftaran->tipe_periksa=='5'){
-        //     redirect(site_url('periksamedis/periksa_jasa/'));
-        // }
-        // else if($data_pendaftaran->tipe_periksa=='6'){
-        //     redirect(site_url('periksamedis/periksa_lab/'));
-        // }
     }
     public function edit()
     {
@@ -1095,6 +1101,30 @@ class Periksamedis extends CI_Controller
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
         $this->load->model('Tbl_sksehat_model');
         $getLastNomor = $this->Tbl_sksehat_model->getLastNomor();
+        $pasien = $this->Tbl_pasien_model->get_by_id($_GET['id']);
+        if ($pasien != null) {
+            // tanggal lahir
+            $tanggal = new DateTime($pasien->tanggal_lahir);
+
+            // tanggal hari ini
+            $today = new DateTime('today');
+
+            // tahun
+            $y = $today->diff($tanggal)->y;
+
+
+            $periksa = $this->Periksa_model->get_by_id_limit_1($pasien->no_rekam_medis);
+            if ($periksa != null) {;
+                $berat_badan = $this->Pendaftaran_model->berat_badan($periksa->no_periksa);
+                $tinggi_badan = $this->Pendaftaran_model->tinggi_badan($periksa->no_periksa);
+                $data['berat_badan'] = $berat_badan[0]->nilai_periksa_fisik;
+                $data['tinggi_badan'] = $tinggi_badan[0]->nilai_periksa_fisik;
+            } else {
+                $data['berat_badan'] = set_value('berat_badan');
+                $data['tinggi_badan'] = set_value('tinggi_badan');
+            }
+        }
+
         $nomor = 1;
         if (count($getLastNomor) > 0) {
             $getNomor = explode('/', $getLastNomor[0]->nomor);
@@ -1103,6 +1133,12 @@ class Periksamedis extends CI_Controller
             }
         }
         $data['nomor'] = sprintf("%04s", $nomor);
+        $data['nama'] = $pasien != null ? $pasien->nama_lengkap : set_value('nama');
+        $data['pekerjaan'] = $pasien != null ? $pasien->pekerjaan : set_value('pekerjaan');
+        $data['golongan_darah'] = $pasien != null ? $pasien->golongan_darah : set_value('golongan_darah');
+        $data['alamat'] = $pasien != null ? $pasien->alamat . ' RT ' . $pasien->rt . ' RW ' . $pasien->rw . ', ' . $pasien->kabupaten : set_value('alamat');
+        $data['jenis_kelamin'] = $pasien != null ? $pasien->jenis_kelamin  : set_value('jenis_kelamin');
+        $data['umur'] = $pasien != null ? $y : set_value('umur');
         if ($this->form_validation->run() == TRUE) {
             $post = $this->input->post();
             $romawi = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII");

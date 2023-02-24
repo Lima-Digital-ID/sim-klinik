@@ -5,7 +5,7 @@
                 <div class="box box-warning box-solid">
 
                     <div class="box-header">
-                        <h3 class="box-title">KELOLA DATA PASIEN</h3>
+                        <h3 class="box-title">REKAM MEDIS PASIEN</h3>
                     </div>
 
                     <div class="box-body">

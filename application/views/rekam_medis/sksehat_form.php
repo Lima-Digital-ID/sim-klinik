@@ -54,13 +54,13 @@
                             <div class="col-sm-10">
                                 <div class="radio">
                                     <label>
-                                        <?php echo form_radio(array('id' => 'jenis_kelamin', 'name' => 'jenis_kelamin', 'value' => 'L')); ?>
+                                        <?php echo form_radio(array('id' => 'jenis_kelamin', 'name' => 'jenis_kelamin', 'value' => 'L', 'checked' => $jenis_kelamin == 'L' ? 'true' : '')); ?>
                                         Laki-laki
                                     </label>
                                 </div>
                                 <div class="radio">
                                     <label>
-                                        <?php echo form_radio(array('id' => 'jenis_kelamin', 'name' => 'jenis_kelamin', 'value' => 'P', 'checked')); ?>
+                                        <?php echo form_radio(array('id' => 'jenis_kelamin', 'name' => 'jenis_kelamin', 'value' => 'P', 'checked' => $jenis_kelamin == 'P' ? 'true' : '')); ?>
                                         Perempuan
                                     </label>
                                 </div>
@@ -81,13 +81,13 @@
                         <div class="form-group">
                             <div class="col-sm-2">Tinggi Badan <?php echo form_error('tinggi_badan'); ?></div>
                             <div class="col-sm-10">
-                                <?php echo form_input(array('id' => 'tinggi_badan', 'name' => 'tinggi_badan', 'type' => 'number', 'value' => '', 'class' => 'form-control')); ?>
+                                <?php echo form_input(array('id' => 'tinggi_badan', 'name' => 'tinggi_badan', 'type' => 'number', 'value' => $tinggi_badan, 'class' => 'form-control')); ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-2">Berat Badan <?php echo form_error('berat_badan'); ?></div>
                             <div class="col-sm-10">
-                                <?php echo form_input(array('id' => 'berat_badan', 'name' => 'berat_badan', 'type' => 'number', 'value' => '', 'class' => 'form-control')); ?>
+                                <?php echo form_input(array('id' => 'berat_badan', 'name' => 'berat_badan', 'type' => 'number', 'value' => $berat_badan, 'class' => 'form-control')); ?>
                             </div>
                         </div>
                         <div class="form-group">

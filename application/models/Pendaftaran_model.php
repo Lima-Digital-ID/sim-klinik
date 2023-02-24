@@ -145,6 +145,8 @@ class Pendaftaran_model extends CI_Model
             $this->datatables->add_column('action', anchor(site_url('periksamedis/periksa/$1?tipe=$3'), 'Periksa', 'class="btn btn-warning btn-sm $2"'), 'no_pendaftaran,status_antrian,tipe_periksa');
 
             $this->datatables->add_column('action_edit', anchor(site_url('periksamedis/edit?id=$1'), 'Periksa', 'class="btn btn-warning btn-sm"'), 'no_periksa');
+            $this->datatables->add_column('rapid', anchor(site_url('periksamedis/edit?id=$1'), 'Rapid', 'class="btn btn-success btn-sm"'), 'no_periksa');
+            $this->datatables->add_column('sksehat', anchor(site_url('periksamedis/sksehat?id=$1'), 'Surat Sehat', 'class="btn btn-info btn-sm"'), 'no_rekam_medis');
         }
 
         return $this->datatables->generate();
@@ -197,5 +199,23 @@ class Pendaftaran_model extends CI_Model
     {
         $this->db->order_by('id', $this->order);
         return $this->db->get('tbl_tujuan_periksa')->result();
+    }
+
+    function berat_badan($id)
+    {
+        $this->db->order_by('id_periksa_d_fisik', $this->order);
+        $this->db->limit(1);
+        $this->db->where('no_periksa', $id);
+        $this->db->where('nama_periksa_fisik', 'Berat Badan');
+        return $this->db->get('tbl_periksa_d_fisik')->result();
+    }
+
+    function tinggi_badan($id)
+    {
+        $this->db->order_by('id_periksa_d_fisik', $this->order);
+        $this->db->limit(1);
+        $this->db->where('no_periksa', $id);
+        $this->db->where('nama_periksa_fisik', 'Tinggi Badan');
+        return $this->db->get('tbl_periksa_d_fisik')->result();
     }
 }
