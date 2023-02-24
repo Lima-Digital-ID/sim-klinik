@@ -1219,7 +1219,7 @@ class Periksamedis extends CI_Controller
             "dtm_upd" => date("Y-m-d H:i:s",  time())
         ));
         if ($_GET['tipe'] == '1' || $_GET['tipe'] == '4') {
-            $noDaftar = $this->id_dokter == null ? "?no_daftar=".$no_pend : '';;
+            $noDaftar = $this->no_pendaftaran == null ? "?no_daftar=".$no_pend : '';;
             redirect(site_url('periksamedis'.$noDaftar));
         } else if ($_GET['tipe'] == '2') {
             redirect(site_url('periksamedis/imunisasi/'));
