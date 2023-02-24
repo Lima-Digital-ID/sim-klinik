@@ -45,6 +45,10 @@ class Periksamedis extends CI_Controller
 
     public function index()
     {
+        if(isset($_GET['no_daftar'])){
+            $this->no_pendaftaran = $_GET['no_daftar'];
+        }
+
         if ($this->no_pendaftaran == null) {
             $this->session->set_flashdata('message', 'Tidak ada pemeriksaan, silahkan pilih di Daftar Antrian');
             $this->session->set_flashdata('message_type', 'danger');
@@ -1179,7 +1183,8 @@ class Periksamedis extends CI_Controller
             "dtm_upd" => date("Y-m-d H:i:s",  time())
         ));
         if ($_GET['tipe'] == '1' || $_GET['tipe'] == '4') {
-            redirect(site_url('periksamedis'));
+            $noDaftar = $this->id_dokter == null ? "?no_daftar=".$no_pend : '';;
+            redirect(site_url('periksamedis'.$noDaftar));
         } else if ($_GET['tipe'] == '2') {
             redirect(site_url('periksamedis/imunisasi/'));
         } else if ($_GET['tipe'] == '3') {
