@@ -780,7 +780,7 @@ Ekstremitas : akral hangat (+/+) (+/+), edema (-/-) capillary refil time kurang 
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "periksamedis/json_by_id",
+                "url": "periksamedis/json_by_id<?= isset($_GET['no_daftar']) ? "?no_daftar=".$_GET['no_daftar'] : '' ?>",
                 "type": "POST"
             },
             columns: [{
