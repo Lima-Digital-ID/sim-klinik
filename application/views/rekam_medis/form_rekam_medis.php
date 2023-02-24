@@ -11,7 +11,8 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<?php echo form_open(current_url(), array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
+<?php $urlNoDaftar =  isset($_GET['no_daftar']) ? "?no_daftar=".$_GET['no_daftar'] : '' ?>
+<?php echo form_open(current_url().$urlNoDaftar, array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
 <div class="content-wrapper" id="tab1">
     <section class="content-header">
         <h1>
