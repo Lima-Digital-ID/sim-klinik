@@ -2009,7 +2009,7 @@ class Periksamedis extends CI_Controller
     {
         header('Content-Type: application/json');
         // echo $this->Periksa_model->json_riwayat($this->id_dokter);
-        echo ($this->Periksa_model->json_riwayat($this->id_dokter));
+        echo $this->Periksa_model->json_riwayat($this->id_dokter);
         // echo json_encode($this->Periksa_model->json_riwayat($this->id_dokter));
     }
 

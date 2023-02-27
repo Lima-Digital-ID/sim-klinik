@@ -36,7 +36,7 @@
                         <div class="form-group">
                             <div class="col-sm-4">No Rekam Medis <?php echo form_error('no_rekam_medis'); ?></div>
                             <div class="col-sm-8">
-                                <?php echo form_input(array('id' => 'no_rekam_medis', 'name' => 'no_rekam_medis', 'type' => 'text', 'value' => $no_rekam_medis_default, 'class' => 'form-control', 'readonly' => 'readonly')); ?>
+                                <?php echo form_input(array('id' => 'no_rekam_medis', 'name' => 'no_rekam_medis', 'type' => 'text', 'value' => $no_rekam_medis, 'class' => 'form-control', 'readonly' => 'readonly')); ?>
                             </div>
                         </div>
                         <!-- <div class="form-group">
