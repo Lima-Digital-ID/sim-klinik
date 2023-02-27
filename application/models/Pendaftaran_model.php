@@ -142,9 +142,10 @@ class Pendaftaran_model extends CI_Model
         if ($isFormKhusus) {
             $this->datatables->add_column('action', anchor(site_url('form_khusus/preview/$1?act=preview'), 'Preview', 'class="btn btn-warning btn-sm btn-act" data-no="$1" data-form="1"') . " " . anchor(site_url('form_khusus/preview/$1?act=doc'), 'Download Doc', 'class="btn btn-primary btn-sm btn-act" data-no="$1" data-form="1"') . " " . anchor(site_url('form_khusus/preview/$1?act=print'), 'Print', 'class="btn btn-success btn-sm btn-act" data-no="$1" data-form="1"'), 'no_pendaftaran');
         } else {
-            $this->datatables->add_column('action', anchor(site_url('periksamedis/periksa/$1?tipe=$3'), 'Periksa', 'class="btn btn-warning btn-sm $2"'), 'no_pendaftaran,status_antrian,tipe_periksa');
-
-            $this->datatables->add_column('action_edit', anchor(site_url('periksamedis/edit?id=$1'), 'Periksa', 'class="btn btn-warning btn-sm"'), 'no_periksa');
+            $textPeriksa = $id_dokter ? 'Periksa Dokter' : 'Periksa Perawat'; 
+            $this->datatables->add_column('action', anchor(site_url('periksamedis/periksa/$1?tipe=$3'), $textPeriksa, 'class="btn btn-warning btn-sm $2"'), 'no_pendaftaran,status_antrian,tipe_periksa');
+            
+            $this->datatables->add_column('action_edit', anchor(site_url('periksamedis/edit?id=$1'), $textPeriksa, 'class="btn btn-warning btn-sm"'), 'no_periksa');
             $this->datatables->add_column('rapid', anchor(site_url('periksamedis/edit?id=$1'), 'Rapid', 'class="btn btn-success btn-sm"'), 'no_periksa');
             $this->datatables->add_column('sksehat', anchor(site_url('periksamedis/sksehat?id=$1'), 'Surat Sehat', 'class="btn btn-info btn-sm"'), 'no_rekam_medis');
         }
