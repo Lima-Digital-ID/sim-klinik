@@ -180,21 +180,23 @@ class Periksamedis extends CI_Controller
                                 $tgl_exp = $dataobat[$j]['tgl_exp'];
                             }
                         }
-                        $data_detail = array();
-                        $data_detail = array(
-                            'id_inventory' => $kode_receipt,
-                            'kode_barang' => $kode_barang,
-                            'jumlah' => $post_obat_jml[$i],
-                            'harga' => $harga_obat,
-                            'diskon' => $diskon,
-                            'tgl_exp' => $tgl_exp,
-                        );
-                        $harga = $harga_obat - $diskon;
-                        $total = $post_obat_jml[$i] * $harga;
-                        $total_jual += $total;
-
-                        $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang - ' . $post_obat_jml[$i] . ' where kode_barang="' . $kode_barang . '"');
-                        $insert = $this->Transaksi_obat_model->insert('tbl_inventory_detail', $data_detail);
+                        if($kode_barang!=''){
+                            $data_detail = array();
+                            $data_detail = array(
+                                'id_inventory' => $kode_receipt,
+                                'kode_barang' => $kode_barang,
+                                'jumlah' => $post_obat_jml[$i],
+                                'harga' => $harga_obat,
+                                'diskon' => $diskon,
+                                'tgl_exp' => $tgl_exp,
+                            );
+                            $harga = $harga_obat - $diskon;
+                            $total = $post_obat_jml[$i] * $harga;
+                            $total_jual += $total;
+    
+                            $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang - ' . $post_obat_jml[$i] . ' where kode_barang="' . $kode_barang . '"');
+                            $insert = $this->Transaksi_obat_model->insert('tbl_inventory_detail', $data_detail);
+                        }
                     }
                     $no_periksa = $this->input->post('no_periksa');
                     $grand_total_obat = $this->input->post('grandtotal_harga');
