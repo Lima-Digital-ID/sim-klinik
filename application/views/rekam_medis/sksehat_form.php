@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<?php echo form_open(current_url() . '?id=' . $_GET['id'], array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
+<?php echo form_open($url, array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
 <div class="content-wrapper">
     <section class="content">
         <div class="row">

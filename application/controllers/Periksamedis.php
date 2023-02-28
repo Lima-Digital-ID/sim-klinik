@@ -1103,7 +1103,13 @@ class Periksamedis extends CI_Controller
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
         $this->load->model('Tbl_sksehat_model');
         $getLastNomor = $this->Tbl_sksehat_model->getLastNomor();
-        $pasien = $this->Tbl_pasien_model->get_by_id($_GET['id']);
+        if(isset($_GET['id'])){
+            $data['url'] = current_url() . '?id=' . $_GET['id'];
+        }
+        else{
+            $data['url'] = current_url();
+        }
+        $pasien = $this->Tbl_pasien_model->get_by_id(isset($_GET['id']) ? $_GET['id'] : null);
         if ($pasien != null) {
             // tanggal lahir
             $tanggal = new DateTime($pasien->tanggal_lahir);
@@ -1140,6 +1146,8 @@ class Periksamedis extends CI_Controller
         $data['golongan_darah'] = $pasien != null ? $pasien->golongan_darah : set_value('golongan_darah');
         $data['alamat'] = $pasien != null ? $pasien->alamat . ' RT ' . $pasien->rt . ' RW ' . $pasien->rw . ', ' . $pasien->kabupaten : set_value('alamat');
         $data['jenis_kelamin'] = $pasien != null ? $pasien->jenis_kelamin  : set_value('jenis_kelamin');
+        $data['tinggi_badan'] = set_value('tinggi_badan');
+        $data['berat_badan'] = set_value('berat_badan');
         $data['umur'] = $pasien != null ? $y : set_value('umur');
         if ($this->form_validation->run() == TRUE) {
             $post = $this->input->post();
