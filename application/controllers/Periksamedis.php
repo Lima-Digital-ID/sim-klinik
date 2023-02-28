@@ -579,10 +579,11 @@ class Periksamedis extends CI_Controller
                 $this->db->join('tbl_inventory i', 'd.id_inventory = i.id_inventory');
                 $this->db->where('i.no_periksa', $this->input->post('no_periksa'));
                 $oldInventoryDetail = $this->db->get()->result();
-                $oldIdInventory = "";
+                $getOldIdInventory = $this->db->get_where('tbl_inventory',['no_periksa' => $this->input->post('no_periksa')])->row();
+                $oldIdInventory = $getOldIdInventory->id_inventory;
 
                 foreach ($oldInventoryDetail as $key => $value) {
-                    $oldIdInventory = $value->id_inventory;
+                    // $oldIdInventory = $value->id_inventory;
                     $this->db->query('update tbl_obat_alkes_bhp set stok_barang=stok_barang + ' . $value->jumlah . ' where kode_barang="' . $value->kode_barang . '"');
 
                     $this->db->delete('tbl_inventory_detail', ['id_inventory_detail' => $value->id_inventory_detail]);
