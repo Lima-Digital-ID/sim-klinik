@@ -282,6 +282,7 @@ class Pembayaran extends CI_Controller
             redirect(site_url('pembayaran/cetak_surat/'.$id_transaksi.'?view=cetak_struk_periksa'.$tabUrl));
         } else {
             $this->data['id_transaksi'] = $data_transaksi->id_transaksi;
+            $this->data['atas_nama'] = $_GET['nama'];
             $this->data['kode_transaksi'] = $data_transaksi->kode_transaksi;
             $this->data['klinik'] = $data_transaksi->id_klinik;
             $this->data['no_transaksi'] = $data_transaksi->no_transaksi;

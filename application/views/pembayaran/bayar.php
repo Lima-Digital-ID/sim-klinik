@@ -109,7 +109,7 @@
                         <div class="form-group">
                             <div class="col-sm-3">Pembayaran Atas Nama <?php echo form_error('atas_nama'); ?></div>
                             <div class="col-sm-3">
-                                <?php echo form_input(array('id' => 'atas_nama', 'name' => 'atas_nama', 'type' => 'text', 'value' => '', 'class' => 'form-control')); ?>
+                                <?php echo form_input(array('id' => 'atas_nama', 'name' => 'atas_nama', 'type' => 'text', 'value' => $atas_nama, 'class' => 'form-control')); ?>
                             </div>
                         </div>
                         <div class="form-group">
