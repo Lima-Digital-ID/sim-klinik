@@ -26,7 +26,8 @@ class Transaksi_apotek extends CI_Controller
         redirect('transaksi_apotek/po');
     }
     public function po(){
-        $this->template->load('template','transaksi_apotek/purchase_order/purchase_order_list');
+        $this->data['supplier'] = $this->Tbl_supplier_model->get_all();
+        $this->template->load('template','transaksi_apotek/purchase_order/purchase_order_list', $this->data);
     }
     public function json_po(){
         header('Content-Type: application/json');

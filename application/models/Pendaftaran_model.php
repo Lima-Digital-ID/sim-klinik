@@ -202,6 +202,12 @@ class Pendaftaran_model extends CI_Model
         return $this->db->get('tbl_tujuan_periksa')->result();
     }
 
+    function get_id_tujuan($id)
+    {        
+        $this->db->where('id', $id);
+        return $this->db->get('tbl_tujuan_periksa')->row();
+    }
+
     function berat_badan($id)
     {
         $this->db->order_by('id_periksa_d_fisik', $this->order);

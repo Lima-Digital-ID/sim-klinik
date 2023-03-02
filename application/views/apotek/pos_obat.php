@@ -16,36 +16,17 @@
             <div class="col-xs-12">
                 <div class="box box-info box-solid">
                     <div class="box-header">
-                        <h3 class="box-title">DAFTAR PURCHASE ORDER</h3>
+                        <h3 class="box-title">Filter</h3>
                     </div>
                     <div class="box-body">
                         <form action="" method="get">
-                            <!-- <div class="row" style="margin-bottom: 10px"> -->
-                                    <!-- <div class="col-md-4"> -->
-                                    <?php //echo anchor(site_url('obat_racik/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Ms Excel', 'class="btn btn-success btn-sm"'); ?>
-                                    <?php //echo anchor(site_url('obat_racik/import_excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import Ms Excel', 'class="btn btn-success btn-sm"'); ?>
-                                    <?php // echo anchor(site_url('obat_racikan/word'), '<i class="fa fa-file-word-o" aria-hidden="true"></i> Export Ms Word', 'class="btn btn-primary btn-sm"'); ?>
-                                <!-- </div>
-                                <div class="col-md-4 text-center">
-                                    <div style="margin-top: 8px" id="message"> -->
-                                        <?php // echo $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?>
-                                    <!-- </div>
-                                </div> -->
-                                <!-- <div class="col-md-1 text-right">
-                                </div> -->
-                                <!-- <div class="col-md-3 text-right"> -->
-
-                                <!-- </div> -->
-                            <!-- </div> -->
                             <div class="row">
 
                                 <div class="col-md-2">
                                     <label for="">Supplier</label>
                                     <select name="supplier" id="" class="form-control select2">
                                         <option value="">---Pilih Supplier---</option>
-                                        <?php foreach ($supplier as $key => $value) { ?>
-                                            <option value="<?= $value->kode_supplier ?>"><?= $value->nama_supplier ?></option>
-                                        <?php } ?>
+                                        
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -92,13 +73,13 @@
                             <thead>
                                 <tr>
                                     <th width="30px">No</th>
-                                    <th>Nomor PO</th>
-                            		<th>Nama Supplier</th>
-                            		<th>Apoteker</th>
-                                    <th>Total Harga</th>
-                                    <th>Keterangan</th>
-                                    <th>Jenis Pembayaran</th>
-                            		<th width="150px">Action</th>
+                                    <th>Nomor Transaksi</th>
+                                    <!-- <th>Nama Pembeli</th>
+                                    <th>Klinik</th>
+                                    <th>Tanggal Beli Obat</th>
+                                    <th>Status Pembayaran</th>
+                                    <th>Jumlah Total</th> -->
+                                    <!-- <th width="150px">Action</th> -->
                                 </tr>
                             </thead>
                         </table>
@@ -174,21 +155,11 @@
             },
             processing: true,
             serverSide: true,
-            ajax: {"url": "json_po", "type": "POST"},
+            ajax: {"url": "json_obat3?dari="+<?= $_GET['dari'] ?>+'&sampai='+<?= $_GET['sampai'] ?>, "type": "POST"},
             columns: [
                 {
-                    "data": "kode_purchase",
+                    "data": "tgl_bayar",
                     "orderable": false
-                },{"data": "kode_purchase"},{"data": "nama_supplier"},{"data": "nama_apoteker"},
-                {"render": function(data, type, row){
-                    return 'Rp. '+formatRupiah(row.total_harga);
-                }},{"data": "keterangan"},{'render' : function(data, type, row){
-                    return (row.jenis_pembayaran == 0 ? 'Cash' : 'Kredit');
-                }},
-                {
-                    "data" : "action",
-                    "orderable": false,
-                    "className" : "text-center"
                 }
             ],
             order: [[0, 'asc']],

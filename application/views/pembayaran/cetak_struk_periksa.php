@@ -39,14 +39,14 @@
 		<div class="left">
       <div class="img">
           <center>
-              <img src="<?php echo base_url()."assets/images/".getInfoRS('logo')?>" alt="logo" width="50px" />
+              <img src="<?php echo base_url()."assets/images/".getInfoRS('logo')?>" alt="logo" width="50px" style="border-radius:7px"/>
             </center>
       </div>
       <div class="address" style="margin-left:15px;text-align:center;margin-top:10px">
-          <h2 style="font-family:times-new-roman;margin-top:0;margin-bottom:0px"><?= getInfoRS('nama_rumah_sakit') ?></h2>
-          <p style="margin-top:5px;margin-bottom:0px"><?= getInfoRS('alamat') ?></p>
-          <p style="margin-top:5px;margin-bottom:0px"><?= getInfoRS('no_telpon') ?></p>
-          <p style="margin-top:5px;margin-bottom:0px"><b><?= $id_transaksi ?></b></p>
+        <h2 style="font-family:times-new-roman;margin-top:0;margin-bottom:0px"><?= getInfoRS('nama_rumah_sakit') ?></h2>
+        <p style="margin-top:5px;margin-bottom:0px"><?= getInfoRS('alamat') ?></p>
+        <p style="margin-top:5px;margin-bottom:0px">Email : again.medical.center@gmail.com</p>
+        <p style="margin-top:5px;margin-bottom:0px">Telp : 031-5952220 / WA : <?= getInfoRS('no_telpon') ?></p>
       </div>
 		</div>
 	  <!-- <div class="right">
@@ -147,7 +147,7 @@
 
 </html>
 <script type="text/javascript">
-     window.print();
+    //  window.print();
 // window.onmousemove = function() {
 //   window.close();
 // }

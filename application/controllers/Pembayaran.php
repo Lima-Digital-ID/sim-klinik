@@ -18,6 +18,8 @@ class Pembayaran extends CI_Controller
         $this->load->model('Tbl_obat_alkes_bhp_model');
         $this->load->model('Tbl_dokter_model');
         $this->load->model('Tbl_komisi_dokter_model');
+        $this->load->model('Pendaftaran_model');
+        $this->load->model('Tbl_periksa_diagnosa_model');
         $this->load->library('form_validation');        
         $this->load->library('datatables');
         $this->load->model('akuntansi/Transaksi_akuntansi_model');     
@@ -709,5 +711,38 @@ class Pembayaran extends CI_Controller
             $this->load->view('pembayaran/cetak_surat',$this->data);
         }
         
+    }
+
+    public function cetakTagihan($id)
+    {
+        $data_transaksi = $this->Transaksi_model->get_by_id($id);
+        $data_periksa = $this->Periksa_model->get_by_id($data_transaksi->no_transaksi);
+        $data_pasien = $this->Tbl_pasien_model->get_by_id($data_periksa->no_rekam_medis);
+        $data_dokter = $this->Tbl_dokter_model->get_by_id($data_periksa->id_dokter);
+        $data_pendaftaran = $this->Pendaftaran_model->get_by_id($data_periksa->no_pendaftaran);
+        $data_tujuan_periksa = $this->Pendaftaran_model->get_id_tujuan($data_pendaftaran->id_tujuan_periksa);
+        $data_diagnosa_icd = $this->Tbl_periksa_diagnosa_model->get_by_no_periksa($data_periksa->no_periksa);
+        $data_transaksi_d = $this->Transaksi_model->get_detail_by_h_id($data_transaksi->no_transaksi);
+        // $dump = [
+        //     'data_transaksi' => $data_transaksi,
+        //     'data_periksa' => $data_periksa,
+        //     'data_pasien' => $data_pasien,
+        //     'data_dokter' => $data_dokter,
+        //     'data_pendaftaran' => $data_pendaftaran,
+        //     'data_tujuan_periksa' => $data_tujuan_periksa,
+        //     'data_diagnosa_icd' => $data_diagnosa_icd->result(),
+        // ];
+        // echo '<pre>';
+        // print_r($dump);
+        // var_dump($dump);
+        $this->data['data'] = $data_transaksi;
+        $this->data['pasien'] = $data_pasien;
+        $this->data['dokter'] = $data_dokter;
+        $this->data['tujuan'] = $data_tujuan_periksa;
+        $this->data['transaksi_d'] = $data_transaksi_d;
+        $this->data['diagnosa_icd10'] = $data_diagnosa_icd->result();
+        $date=date_create($this->data['data']->tgl_transaksi);
+        $this->data['tgl'] = date_format($date,"d-m-Y");
+        $this->load->view('pembayaran/cetak_tagihan',$this->data);
     }
 }

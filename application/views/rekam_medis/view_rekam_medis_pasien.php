@@ -65,30 +65,30 @@
                 <td colspan="3"><?= $value->anamnesi ?></td>
             </tr>
             <tr>
-                <td>Cek Fisik</td>
+                <td>Riwayat Alergi Obat</td>
                 <td>:</td>
-                <td colspan="3"><?= $value->cek_fisik ?></td>
+                <td colspan="3"><?= $pasien->alamat . " RT " . $pasien->rt . ' RW ' . $pasien->rw . ', ' . $pasien->kabupaten ?></td>
             </tr>
             <tr>
                 <td>Berat Badan</td>
                 <td>:</td>
-                <td><?= $berat_badan[$key]->nilai_periksa_fisik ?></td>
+                <td><?= $berat_badan[0]->nilai_periksa_fisik ?></td>
                 <td>Tekanan Darah</td>
                 <td>:</td>
-                <td><?= $tekanan_darah[$key]->nilai_periksa_fisik ?></td>
+                <td><?= $tekanan_darah[0]->nilai_periksa_fisik ?></td>
             </tr>
             <tr>
                 <td>Tinggi Badan</td>
                 <td>:</td>
-                <td><?= $tinggi_badan[$key]->nilai_periksa_fisik ?></td>
+                <td><?= $tinggi_badan[0]->nilai_periksa_fisik ?></td>
                 <td>Suhu Tubuh</td>
                 <td>:</td>
-                <td><?= $suhu_tubuh[$key]->nilai_periksa_fisik ?></td>
+                <td><?= $suhu_tubuh[0]->nilai_periksa_fisik ?></td>
             </tr>
             <tr>
-                <td>Riwayat Alergi Obat</td>
+                <td>Cek Fisik</td>
                 <td>:</td>
-                <td colspan="3"><?= $pasien->alamat . " RT " . $pasien->rt . ' RW ' . $pasien->rw . ', ' . $pasien->kabupaten ?></td>
+                <td colspan="3"><?= $value->cek_fisik ?></td>
             </tr>
             <tr>
                 <td>Diagnosa</td>

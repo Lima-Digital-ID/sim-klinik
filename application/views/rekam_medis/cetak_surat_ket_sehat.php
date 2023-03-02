@@ -39,18 +39,22 @@
     <!-- Write HTML just like a web page -->
     <!--<article>This is an A5 document.</article>-->
 	<div class="header">
-		<div class="left">
-			<img src="<?php echo base_url()."assets/images/".getInfoRS('logo')?>" alt="logo" width="100" />
-		</div>
-	  <div class="right">
-		  <center>
-			  <h2 style="margin-bottom:0"><?= getInfoRS('nama_rumah_sakit') ?></h2>
-			  <p style="margin-top:5px;margin-bottom:0"><?= getInfoRS('alamat') ?></p>
-			  <p style="margin-top:5px"><?= getInfoRS('no_telpon') ?></p>
-			</center>
-		</div>
-	  <!--<h4 style="text-align: left;">Ruko Atrani 24 - Sukorahayu - Wagir - Telp. (0341) 806305</h4>-->
-	</div>
+    <div class="left" style="width: 30% !important; text-align:end;">
+        <div class="img">
+          <img src="<?php echo base_url()."assets/images/".getInfoRS('logo')?>" alt="logo" width="100" style="border-radius:20px" />
+        </div>
+    </div>
+    <div class="right" style="width: 70% !important; padding-left: 0px !important;">
+      <div class="address" style="margin-left:15px">
+            <center>
+            <h2 style="font-family:times-new-roman;margin-top:0;margin-bottom:0px"><?= getInfoRS('nama_rumah_sakit') ?></h2>
+            <p style="margin-top:5px;margin-bottom:0px"><?= getInfoRS('alamat') ?></p>
+            <p style="margin-top:5px;margin-bottom:0px">Email :again.medical.center@gmail.com</p>
+            <p style="margin-top:5px;margin-bottom:0px">Telp : 031-5952220 / WA : <?= getInfoRS('no_telpon') ?></p>
+            </center>
+      </div>
+    </div>
+  </div>
 <hr />
 	<div style="display:inline-block;position:relative;left:50%;transform:translateX(-50%);-moz-transform:translateX(-50%);-webkit-transform:translateX(-50%)">
 		<h3 style="margin-bottom : 0px;margin-top:5"><span style="text-decoration: underline;">SURAT KETERANGAN SEHAT</span></h3>

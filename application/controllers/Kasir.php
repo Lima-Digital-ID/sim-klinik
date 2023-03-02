@@ -281,4 +281,20 @@ class Kasir extends CI_Controller
         $data['petugas']=$this->session->userdata('full_name');
         $this->load->view('apotek/cetak_struk', $data);
     }
+
+    public function pos_obat()
+    {
+        $this->data['data'] = 'asd';
+        $this->template->load('template','apotek/pos_obat', $this->data);
+    }
+
+    public function json_obat3()
+    {
+        $dari = $_GET['dari'];
+        $sampai = $_GET['sampai'];
+        $data = $this->Transaksi_model->json_obat3($dari,$sampai);
+        
+        header('Content-Type: application/json');
+        echo $data;
+    }
 }

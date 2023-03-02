@@ -19,74 +19,23 @@
                         <h3 class="box-title">DAFTAR PURCHASE ORDER</h3>
                     </div>
                     <div class="box-body">
-                        <form action="" method="get">
-                            <!-- <div class="row" style="margin-bottom: 10px"> -->
-                                    <!-- <div class="col-md-4"> -->
-                                    <?php //echo anchor(site_url('obat_racik/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Ms Excel', 'class="btn btn-success btn-sm"'); ?>
-                                    <?php //echo anchor(site_url('obat_racik/import_excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import Ms Excel', 'class="btn btn-success btn-sm"'); ?>
-                                    <?php // echo anchor(site_url('obat_racikan/word'), '<i class="fa fa-file-word-o" aria-hidden="true"></i> Export Ms Word', 'class="btn btn-primary btn-sm"'); ?>
-                                <!-- </div>
-                                <div class="col-md-4 text-center">
-                                    <div style="margin-top: 8px" id="message"> -->
-                                        <?php // echo $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?>
-                                    <!-- </div>
-                                </div> -->
-                                <!-- <div class="col-md-1 text-right">
-                                </div> -->
-                                <!-- <div class="col-md-3 text-right"> -->
-
-                                <!-- </div> -->
-                            <!-- </div> -->
-                            <div class="row">
-
-                                <div class="col-md-2">
-                                    <label for="">Supplier</label>
-                                    <select name="supplier" id="" class="form-control select2">
-                                        <option value="">---Pilih Supplier---</option>
-                                        <?php foreach ($supplier as $key => $value) { ?>
-                                            <option value="<?= $value->kode_supplier ?>"><?= $value->nama_supplier ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="">Jenis Pembayaran</label>
-                                    <!-- <input type="date" name="dari" class="form-control" value="" > -->
-                                    <select name="jenis" id="" class="form-control select2">
-                                        <option value="">---Pilih Jenis Pembayaran---</option>
-                                        <option value="0" <?= isset($_GET['jenis']) == 0 ? 'selected' : '' ?>>Kredit</option>
-                                        <option value="1" <?= isset($_GET['jenis']) == 1 ? 'selected' : '' ?>>Cash</option>
-                                    </select>
-                                </div>
-                                <!-- <div class="col-md-2">
-                                    <label for="">Status Pembelian</label>
-                                    <option value="">---Pilih Jenis Pembayaran---</option>
-                                </div> -->
-                                <div class="col-md-2">
-                                    <label for="">Dari Tanggal</label>
-                                    <input type="date" name="dari" class="form-control" value="<?= isset($_GET['dari']) ? $_GET['dari'] : '' ?>" >
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="">Sampai Tanggal</label>
-                                    <input type="date" name="sampai" class="form-control" value="<?= isset($_GET['sampai']) ? $_GET['sampai'] : '' ?>" >
-                                </div>
-                                <br>
-                                <button style="margin-top:4px" class="btn btn-danger mt-2"><span class="fa fa-search"></span> Tampilkan</button>
+                        <div class="row" style="margin-bottom: 10px">
+                            <div class="col-md-4">
+                                <?php echo anchor(site_url('transaksi_apotek/create_po'), '<i class="fa fa-wpforms" aria-hidden="true"></i> Tambah Data', 'class="btn btn-success btn-sm"'); ?>
+		<?php //echo anchor(site_url('obat_racik/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Ms Excel', 'class="btn btn-success btn-sm"'); ?>
+		<?php //echo anchor(site_url('obat_racik/import_excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import Ms Excel', 'class="btn btn-success btn-sm"'); ?>
+		<?php // echo anchor(site_url('obat_racikan/word'), '<i class="fa fa-file-word-o" aria-hidden="true"></i> Export Ms Word', 'class="btn btn-primary btn-sm"'); ?>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    
-                                </div>
-                                <div class="col-md-6" style="text-align: end;">
-                                    <br>
-                                    <?php echo anchor(site_url('transaksi_apotek/create_po'), '<i class="fa fa-wpforms" aria-hidden="true"></i> Tambah Data', 'class="btn btn-success"'); ?>
+                            <div class="col-md-4 text-center">
+                                <div style="margin-top: 8px" id="message">
+                                    <?php echo $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?>
                                 </div>
                             </div>
-                        </form>
-                        <?php 
-                            if(isset($_GET['dari'])){
-                        ?>
-                        <div style="padding-bottom: 10px;">
-                        <div style="padding-bottom: 10px;">
+                            <div class="col-md-1 text-right">
+                            </div>
+                            <div class="col-md-3 text-right">
+
+                            </div>
                         </div>
                         <table class="table table-bordered table-striped" id="mytable">
                             <thead>
@@ -102,9 +51,6 @@
                                 </tr>
                             </thead>
                         </table>
-                        <?php
-                        }
-                        ?>
                     </div>
                 </div>
             </div>

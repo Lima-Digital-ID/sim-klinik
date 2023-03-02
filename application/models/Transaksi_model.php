@@ -164,7 +164,7 @@ class Transaksi_model extends CI_Model
         // }
         
         $this->datatables->add_column('cetak_struk',anchor(site_url('pembayaran/cetak_surat/$1?view=cetak_struk_periksa'),'Cetak Struk',array('class' => 'btn btn-info btn-sm','target'=>'_blank')),'id_transaksi');
-        $this->datatables->add_column('action',anchor(site_url('pembayaran/cetak_surat/$1'),'Cetak Kwitansi',array('class' => 'btn btn-warning btn-sm','target'=>'_blank')),'id_transaksi');
+        $this->datatables->add_column('action',anchor(site_url('pembayaran/cetakTagihan/$1'),'Cetak Kwitansi',array('class' => 'btn btn-warning btn-sm','target'=>'_blank')),'id_transaksi');
         
         if($tipe==1 || $tipe==4){
             $this->datatables->add_column('cetak', anchor(site_url('pembayaran/cetak-sksakit?id=$1'),'Cetak SK Sakit','class="btn btn-danger btn-sm"'),'no_periksa');
@@ -489,6 +489,18 @@ class Transaksi_model extends CI_Model
         $this->datatables->where('tbl_transaksi.kode_transaksi', 'TRXOBAT');
         if($id_klinik != null)
             $this->datatables->where('tbl_transaksi.id_klinik', $id_klinik);
+        // $this->datatables->add_column('action',anchor(site_url('pembayaran/bayar_obat/$1'),'Bayar','class="btn btn-danger btn-sm"'),'id_transaksi');
+            
+        return $this->datatables->generate();
+    }
+    function json_obat3($dari, $sampai) {
+        $this->datatables->select('tbl_transaksi.id_transaksi,tbl_transaksi.kode_transaksi,tbl_klinik.nama as id_klinik,tbl_transaksi.no_transaksi,tbl_transaksi.dtm_crt as tgl_beli,tbl_transaksi.atas_nama, tbl_transaksi.dtm_upd as tgl_bayar');
+        $this->datatables->from('tbl_transaksi');
+        $this->datatables->join('tbl_klinik','tbl_transaksi.id_klinik=tbl_klinik.id_klinik');
+        $this->datatables->where('tbl_transaksi.status_transaksi', 1);
+        $this->datatables->where('tbl_transaksi.kode_transaksi', 'TRXOBAT');
+        $this->datatables->where('tbl_transaksi.dtm_crt', '');
+        $this->datatables->where("tbl_transaksi.dtm_crt = '".$dari." 00:00:00' and '".$sampai." 23:59:59'");
         // $this->datatables->add_column('action',anchor(site_url('pembayaran/bayar_obat/$1'),'Bayar','class="btn btn-danger btn-sm"'),'id_transaksi');
             
         return $this->datatables->generate();
