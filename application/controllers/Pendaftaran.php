@@ -95,12 +95,13 @@ class Pendaftaran extends CI_Controller
 
             $this->data['message'] = $this->session->flashdata('message');
 
-            $this->db->where('no_id_pasien', set_value('no_id'));
+            $this->db->where('nik', set_value('nik'));
             $dataPasien = $this->db->get('tbl_pasien')->row();
 
             $this->data['no_rekam_medis_default'] = $this->Master_sequence_model->set_code_by_master_seq_code("NOREKAMMEDIS");
 
-            $this->data['no_rekam_medis'] = $pasien_existing != null ? $pasien_existing->no_rekam_medis : ($dataPasien != null ? set_value('no_rekam_medis') : $this->data['no_rekam_medis_default']);
+            $this->data['no_rekam_medis'] = $pasien_existing != null ? $pasien_existing->no_rekam_medis : ($dataPasien != null ? $this->data['no_rekam_medis_default'] : $this->data['no_rekam_medis_default']);
+            // var_dump(set_value('nik'));
             $this->data['no_id'] = $pasien_existing != null ? $pasien_existing->no_id_pasien : set_value('no_id');
             $this->data['nama_lengkap'] = $pasien_existing != null ? $pasien_existing->nama_lengkap : set_value('nama_lengkap');
             $this->data['nik'] = $pasien_existing != null ? $pasien_existing->nik : set_value('nik');
