@@ -162,7 +162,8 @@ class Periksa_model extends CI_Model
         //     '.($id_dokter != 0 ? "WHERE `p`.`id_dokter` = ".$id_dokter : "").'
         //     GROUP BY `p`.`no_rekam_medis`')->result();
         // return $data;
-        $this->datatables->select('MAX(p.no_rekam_medis) AS no_rekam_medis, MAX(p.no_periksa) AS no_periksa, MAX(ps.nama_lengkap) as nama_pasien, MAX(k.nama) as klinik, MAX(d.nama_dokter) as nama_dokter, MAX(p.anamnesi) AS anamnesi, MAX(p.diagnosa) AS diagnosa, MAX(p.tindakan) AS tindakan, MAX(p.obat_detail) AS obat_detail, MAX(DATE_FORMAT(p.dtm_crt, "%Y-%m-%d")) as tgl_periksa,(CASE MAX(p.is_ambil_obat) WHEN 1 THEN "Selesai" ELSE "Obat Belum Diambil" END) as status, (CASE MAX(p.is_surat_ket_sakit) WHEN 1 THEN "" ELSE "disabled" END) as is_cetak, ps.nama_lengkap');
+        // $this->datatables->select('MAX(p.no_rekam_medis) AS no_rekam_medis, MAX(p.no_periksa) AS no_periksa, MAX(ps.nama_lengkap) as nama_pasien, MAX(k.nama) as klinik, MAX(d.nama_dokter) as nama_dokter, MAX(p.anamnesi) AS anamnesi, MAX(p.diagnosa) AS diagnosa, MAX(p.tindakan) AS tindakan, MAX(p.obat_detail) AS obat_detail, MAX(DATE_FORMAT(p.dtm_crt, "%Y-%m-%d")) as tgl_periksa,(CASE MAX(p.is_ambil_obat) WHEN 1 THEN "Selesai" ELSE "Obat Belum Diambil" END) as status, (CASE MAX(p.is_surat_ket_sakit) WHEN 1 THEN "" ELSE "disabled" END) as is_cetak, ps.nama_lengkap');
+        $this->datatables->select('p.no_rekam_medis, DATE_FORMAT(p.dtm_crt, "%Y-%m-%d") as tgl_periksa, p.diagnosa, d.nama_dokter, k.nama as klinik,ps.nama_lengkap');
         $this->datatables->from('tbl_periksa p');
         $this->datatables->join('tbl_pasien ps', 'p.no_rekam_medis = ps.no_rekam_medis', 'left');
         $this->datatables->join('tbl_pendaftaran pd', 'p.no_pendaftaran = pd.no_pendaftaran', 'left');
