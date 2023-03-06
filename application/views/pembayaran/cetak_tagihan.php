@@ -196,6 +196,17 @@
                 </td>
                 <td class="tg-0lax">
                   <?php echo $loop->deskripsi; ?>
+                  <?php  
+                    if($loop->deskripsi == 'Biaya Tindakan'){
+                    foreach ($tindakan as $t) { ?>
+                    <br>
+                    - <?= $t->tindakan ?>
+                  <?php } }else if($loop->deskripsi == 'Total Obat-obatan'){
+                    foreach ($obat as $o) { ?>
+                      <br>
+                      - <?= $o->nama_barang ?>
+                    <?php }
+                  } ?>
                 </td>
                 <td class="tg-0lax">
                   1

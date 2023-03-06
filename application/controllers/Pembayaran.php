@@ -733,6 +733,9 @@ class Pembayaran extends CI_Controller
     public function cetakTagihan($id)
     {
         $data_transaksi = $this->Transaksi_model->get_by_id($id);
+        $data_transaksi_prks = $this->Transaksi_model->get_by_prks($id);
+        $tindakan = $this->Transaksi_model->tindakan($data_transaksi_prks->no_transaksi);
+        $obat = $this->Transaksi_model->obatObatan($data_transaksi_prks->no_transaksi);
         $data_periksa = $this->Periksa_model->get_by_id($data_transaksi->no_transaksi);
         $data_pasien = $this->Tbl_pasien_model->get_by_id($data_periksa->no_rekam_medis);
         $data_dokter = $this->Tbl_dokter_model->get_by_id($data_periksa->id_dokter);
@@ -748,6 +751,9 @@ class Pembayaran extends CI_Controller
         //     'data_pendaftaran' => $data_pendaftaran,
         //     'data_tujuan_periksa' => $data_tujuan_periksa,
         //     'data_diagnosa_icd' => $data_diagnosa_icd->result(),
+        //     'data_transaksi_prks' => $data_transaksi_prks,
+        //     'tindakan' => $tindakan,
+        //     'obat' => $obat,
         // ];
         // echo '<pre>';
         // print_r($dump);
@@ -757,6 +763,8 @@ class Pembayaran extends CI_Controller
         $this->data['dokter'] = $data_dokter;
         $this->data['tujuan'] = $data_tujuan_periksa;
         $this->data['transaksi_d'] = $data_transaksi_d;
+        $this->data['tindakan'] = $tindakan;
+        $this->data['obat'] = $obat;
         $this->data['diagnosa_icd10'] = $data_diagnosa_icd->result();
         $date = date_create($this->data['data']->tgl_transaksi);
         $this->data['tgl'] = date_format($date, "d-m-Y");
