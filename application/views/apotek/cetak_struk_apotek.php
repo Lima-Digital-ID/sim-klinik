@@ -34,17 +34,25 @@
   <link rel="shortcut icon" href="{{ asset('public/assets/img/icon2.png') }}" />
 </head>
 <body>
-  <center>
-    <p style="margin-bottom:0px;margin-top:0px">KLINIK-AGAIN</p>
-    <p style="margin-bottom:0px;margin-top:0px">Jln </p>
-    <p style="margin-bottom:0px;margin-top:0px">Kabupaten</p>
+<center>
+  <div class="left">
+      <div class="img">
+          <center>
+              <img src="<?php echo base_url()."assets/images/".getInfoRS('logo')?>" alt="logo" width="50px" style="border-radius:7px"/>
+            </center>
+      </div>
+      <div class="address" style="margin-left:15px;text-align:center;margin-top:10px">
+        <h2 style="font-family:times-new-roman;margin-top:0;margin-bottom:0px"><?= getInfoRS('nama_rumah_sakit') ?></h2>
+        <p style="margin-top:5px;margin-bottom:0px"><?= getInfoRS('alamat') ?></p>
+        <p style="margin-top:5px;margin-bottom:0px">Email : again.medical.center@gmail.com</p>
+        <p style="margin-top:5px;margin-bottom:0px">Telp : 031-5952220 / WA : <?= getInfoRS('no_telpon') ?></p>
+      </div>
     -------------------------------------------
-    <?php echo $periksa_d_obat[0]->no_periksa;?>
-    <br>
-    Nama Pasien : <?= $nama_pasien ?>
+    <?php echo $transaksi[0]->no_transaksi;?>
     <br>        
     -------------------------------------------
-  </center><table width="100%">
+  </center>
+  <table width="100%">
     <?php
       $total_transaksi = 0;
       $i = 1;

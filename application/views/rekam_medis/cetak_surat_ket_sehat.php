@@ -138,7 +138,7 @@
 			<br>
 			SIP:
 		</p>
-		<p style="text-align: right;"><u> <?php echo $nama_dokter; ?> </u></p>
+		<!-- <p style="text-align: right;"><u> <?php echo $nama_dokter; ?> </u></p> -->
 	</section>
 
 </body>
