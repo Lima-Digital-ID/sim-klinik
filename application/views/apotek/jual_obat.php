@@ -1,5 +1,4 @@
-<?php echo form_open(current_url(), array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
-<input type="hidden" name="no_transaksi" value="<?php echo $no_transaksi;?>" />
+<?php echo form_open(base_url().'kasir/posObat', array('class' => 'form-horizontal', 'id' => 'form-rekam_medis')); ?>
 <div class="content-wrapper">
     <section class="content">
         <div class="row">
@@ -13,6 +12,10 @@
 							<div class="col-sm-2">Nama Pembeli / Pasien <?php echo form_error('atas_nama'); ?></div>
     						<div class="col-sm-4">
     							<?php echo form_input(array('id'=>'atas_nama','name'=>'atas_nama','type'=>'text','value'=>'','class'=>'form-control'));?>
+    						</div>
+							<div class="col-sm-2">No Transaksi<?php echo form_error('no_trx'); ?></div>
+    						<div class="col-sm-4">
+    							<?php echo form_input(array('id'=>'no_trx','name'=>'no_trx','type'=>'text','value'=>$no_transaksi,'class'=>'form-control', 'readonly' => 'true'));?>
     						</div>
 						</div>
 						<hr />
@@ -58,14 +61,30 @@
 								</div>
 							</div>
 						</div>
-						<div style="display:none;">
-                            <?php echo form_input(array('id'=>'total_harga','name'=>'total_harga','type'=>'text','value'=>'','class'=>'form-control','readonly'=>'readonly','style'=>'text-align:right;'));?>
-                        </div>
+                        <hr />
+                        <div class="form-group">
+							<div class="col-sm-3">Total Transaksi</div>
+    						<div class="col-sm-3">
+    							<?php echo form_input(array('id'=>'total_harga','name'=>'total_harga','type'=>'number','value'=> '0','class'=>'form-control','readonly'=>'readonly','style'=>'text-align:right;','placeholder'=>'0'));?>
+    						</div>
+						</div> 
+						<div class="form-group">
+							<div class="col-sm-3">Total Subsidi</div>
+    						<div class="col-sm-3">
+    							<?php echo form_input(array('id'=>'subsidi_transaksi','name'=>'subsidi_transaksi','type'=>'number','value'=> '0','class'=>'form-control','style'=>'text-align:right;','placeholder'=>'0','onkeyup'=>'hitung_bayar()'));?>
+    						</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-3">Total yang Harus Dibayar</div>
+    						<div class="col-sm-3">
+    							<?php echo form_input(array('id'=>'total_pembayaran','name'=>'total_pembayaran','type'=>'number','value'=> '0','class'=>'form-control','readonly'=>'readonly','style'=>'text-align:right;','placeholder'=>'0'));?>
+    						</div>
+						</div>
                         <div class="form-group">
                             <div class="col-sm-2">
                             </div>
 							<div class="col-sm-10">
-								<div align="left">
+								<div align="left" style="text-align: end;">
 									<button type="submit" class="btn btn-success"><i class="fa fa-medkit"></i> Jual Obat </button> 
 								</div>
 							</div>
@@ -116,69 +135,6 @@
             get_obat(null);
         });
     });
-    
-    // function get_obat(selectObject = null, isCheckJml = false){
-    //     var value = selectObject.value;  
-    //     var obat_length = $("[id^=obat]").length;
-    //     var obat = <?php echo $obat;?>;
-        
-    //     for(x = 0; x < obat_length; x++){
-    //         var kode_barang = $("[id^=obat]").eq(x).val();
-    //         var temp_jml_selected = $("[id^=jml_obat]").eq(x).val();
-            
-    //         $.each(obat, function(i, item) {
-    //             if(obat[i].kode_barang == kode_barang){
-                    
-    //                 if (!isCheckJml)
-    //                     $("[id^=jml_obat]").eq(x).empty();
-                    
-    //                 var option = '';
-    //                 var harga = 0;
-    //                 if(obat[i].stok_barang > 0){
-    //                     //Set Jumlah Option
-    //                     if (!isCheckJml){
-    //                         for(y = 0; y < obat[i].stok_barang; y++){
-    //                             if((y+1) == temp_jml_selected)
-    //                                 option += '<option value="'+(y+1)+'" selected = "selected">'+(y+1)+'</option>';
-    //                             else
-    //                                 option += '<option value="'+(y+1)+'">'+(y+1)+'</option>';
-    //                         }
-    //                     }
-                        
-    //                     harga = parseInt(obat[i].harga);
-    //                 }else{
-    //                     if (!isCheckJml)
-    //                         option += '<option value="">Habis</option>';
-    //                     harga = 0;
-    //                 }
-                    
-    //                 if (!isCheckJml)
-    //                     $("[id^=jml_obat]").eq(x).append(option);
-                    
-    //                 var jml_barang = $("[id^=jml_obat]").eq(x).val() != '' ? parseInt(Math.ceil($("[id^=jml_obat]").eq(x).val())) : 0;
-    //                 $("[id^=harga_obat]").eq(x).val(jml_barang * harga);
-                    
-    //             } else {
-    //                 if (!isCheckJml)
-    //                     option += '<option value="">Habis</option>';
-    //                 harga = 0;
-    //             }
-                
-    //             if (!isCheckJml)
-    //                 $("[id^=jml_obat]").eq(x).append(option);
-                    
-    //             var jml_barang = $("[id^=jml_obat]").eq(x).val() != '' ? parseInt(Math.ceil($("[id^=jml_obat]").eq(x).val())) : 0;
-    //             $("[id^=harga_obat]").eq(x).val(jml_barang * harga);
-    //         });
-            
-    //         if(kode_barang == ''){
-    //             $("[id^=harga_obat]").eq(x).val('');
-    //             $("[id^=jml_obat]").eq(x).empty();
-    //             var option = '<option value="">Pilih Jumlah</option>';
-    //             $("[id^=jml_obat]").eq(x).append(option);
-    //         }
-    //     }
-    // }
     
     function get_obat(selectObject = null, isCheckJml = false) {
         // var value = selectObject selectObject.value;  
@@ -252,6 +208,23 @@
         }
         
         $('#total_harga').val(total_harga);
+        $('#total_pembayaran').val(total_harga);
+    }
+
+    function hitung_bayar(){
+        var total_harga = parseInt($('#total_harga').val());
+        var subsidi_transaksi = parseInt($('#subsidi_transaksi').val() != '' ? $('#subsidi_transaksi').val() : 0);
+        
+        //menghitung subsidi
+        if(subsidi_transaksi > total_harga){
+            subsidi_transaksi = total_harga;
+            $('#subsidi_transaksi').val(total_harga);
+        } else if (subsidi_transaksi < 0){
+            subsidi_transaksi = 0;
+            $('#subsidi_transaksi').val(0);
+        }
+        
+        $('#total_pembayaran').val(parseInt(total_harga) - parseInt(subsidi_transaksi));
     }
     
 </script>

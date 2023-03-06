@@ -497,11 +497,11 @@ class Transaksi_model extends CI_Model
         $this->datatables->select('tbl_transaksi.id_transaksi,tbl_transaksi.kode_transaksi,tbl_klinik.nama as id_klinik,tbl_transaksi.no_transaksi,tbl_transaksi.dtm_crt as tgl_beli,tbl_transaksi.atas_nama, tbl_transaksi.dtm_upd as tgl_bayar');
         $this->datatables->from('tbl_transaksi');
         $this->datatables->join('tbl_klinik','tbl_transaksi.id_klinik=tbl_klinik.id_klinik');
-        $this->datatables->where('tbl_transaksi.status_transaksi', 1);
+        // $this->datatables->where('tbl_transaksi.status_transaksi', 1);
         $this->datatables->where('tbl_transaksi.kode_transaksi', 'TRXOBAT');
-        $this->datatables->where('tbl_transaksi.dtm_crt', '');
-        $this->datatables->where("tbl_transaksi.dtm_crt = '".$dari." 00:00:00' and '".$sampai." 23:59:59'");
-        // $this->datatables->add_column('action',anchor(site_url('pembayaran/bayar_obat/$1'),'Bayar','class="btn btn-danger btn-sm"'),'id_transaksi');
+        $this->datatables->where('tbl_transaksi.dtm_crt >=', $dari . ' 00:00:00');
+        $this->datatables->where('tbl_transaksi.dtm_crt <=', $sampai . ' 23:59:59');
+        $this->datatables->add_column('action',anchor(site_url('pembayaran/cetak_struk_jual/$1'),'Cetak Struk','class="btn btn-info btn-sm"'),'no_transaksi');
             
         return $this->datatables->generate();
     }

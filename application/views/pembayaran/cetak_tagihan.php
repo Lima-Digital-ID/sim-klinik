@@ -40,7 +40,7 @@
   </style>-->
   <style>
     @page {
-      size: A5
+      size: A4
     }
   </style>
   <style type="text/css">
@@ -90,7 +90,7 @@
   <section class="sheet padding-10mm">
 
     <div class="header">
-      <div class="left" style="width: 30% !important; justify-content:flex-end; margin-top:20px">
+      <div class="left" style="width: 15% !important; margin-top:20px">
         <div class="img">
           <img src="<?php echo base_url() . "assets/images/" . getInfoRS('logo') ?>" alt="logo" width="100" style="border-radius:20px" />
         </div>

@@ -31,28 +31,48 @@ class Kasir extends CI_Controller
     } 
     
     public function jual_obat(){
-        $this->form_validation->set_rules('no_transaksi', 'No Transaksi', 'trim|required');
+        
+        $this->data['no_transaksi'] = 'TRXOBAT'.$this->Master_sequence_model->set_code_by_master_seq_code("NOTRANSAKSIOBAT");
+        
+        $this->data['obat_option'] = array();
+        $this->data['obat_option'][''] = 'Pilih Obat';
+        $obat_opt_js = array();
+        foreach ($this->Tbl_obat_alkes_bhp_model->get_all_obat($this->id_klinik) as $obat){
+            $this->data['obat_option'][$obat->kode_barang] = $obat->nama_barang;
+            $obat_opt_js[] = array(
+                'value' => $obat->kode_barang,
+                'label' => $obat->nama_barang
+            );
+        }
+        $this->data['obat_option_js'] = json_encode($obat_opt_js);
+        
+        $this->data['obat'] = $this->get_all_obat();
+        
+        $this->template->load('template','apotek/jual_obat', $this->data);
+    }
+
+    public function posObat()
+    {
         $this->form_validation->set_rules('atas_nama', 'Atas Nama', 'trim|required');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
-        
+
         if ($this->form_validation->run() == TRUE) {
-            
             //TRANSAKSI
             $date_now_trx = date('Y-m-d', time());
-            $no_transaksi='TRXOBAT'.$this->Master_sequence_model->set_code_by_master_seq_code("NOTRANSAKSIOBAT", true);
+            $no_transaksi='TRXOBAT'.$this->Master_sequence_model->set_code_by_master_seq_code("NOTRANSAKSIOBAT",true);
             $data_transkasi = array(
                 'kode_transaksi' => 'TRXOBAT',
                 'id_klinik' => $this->id_klinik,
                 // 'no_transaksi' => 'TRXOBAT'.$this->Master_sequence_model->set_code_by_master_seq_code("NOTRANSAKSIOBAT", true),
                 'no_transaksi' => $no_transaksi,
                 'tgl_transaksi' => $date_now_trx,
-                'status_transaksi' => 0,
+                'status_transaksi' => 1,
                 'atas_nama' => $this->input->post('atas_nama')
             );
             
             $data_transaksi_d = array(
                 array(
-                    'no_transaksi' => $this->input->post('no_transaksi'),
+                    'no_transaksi' => $no_transaksi,
                     'deskripsi' => 'Total Obat-obatan',
                     'amount_transaksi' => $this->input->post('total_harga'),
                     'dc' => 'd'
@@ -119,7 +139,7 @@ class Kasir extends CI_Controller
             for($i = 0; $i < count($post_obat); $i++){
                 if($post_obat[$i] != null || $post_obat[$i] != ''){
                     $data_transaksi_d_obat[] = array(
-                        'no_transaksi' => $this->input->post('no_transaksi'),
+                        'no_transaksi' => $no_transaksi,
                         'kode_barang' => $post_obat[$i],
                         'jumlah' => $post_obat_jml[$i],
                         'harga' => $post_obat_harga[$i]
@@ -143,30 +163,38 @@ class Kasir extends CI_Controller
             $this->Transaksi_model->insert($data_transkasi,$data_transaksi_d);
             $this->Transaksi_model->insert_transaksi_d_obat($data_transaksi_d_obat);
             $id_last=$this->db->select_max('id_transaksi')->from('tbl_transaksi')->get()->row();
-             
-            redirect('pembayaran/bayar_obat/'.$id_last->id_transaksi);
-        } else {
-        
-            $this->data['no_transaksi'] = 'TRXOBAT'.$this->Master_sequence_model->set_code_by_master_seq_code("NOTRANSAKSIOBAT");
-            
-            $this->data['obat_option'] = array();
-            $this->data['obat_option'][''] = 'Pilih Obat';
-            $obat_opt_js = array();
-            foreach ($this->Tbl_obat_alkes_bhp_model->get_all_obat($this->id_klinik) as $obat){
-                $this->data['obat_option'][$obat->kode_barang] = $obat->nama_barang;
-                $obat_opt_js[] = array(
-                    'value' => $obat->kode_barang,
-                    'label' => $obat->nama_barang
+
+            $data_trans_d = array();
+            if ($this->input->post('subsidi_transaksi') != '') {
+                $data_trans_d[] = array(
+                    // 'id_transaksi' => $id_transaksi,
+                    'no_transaksi' => $no_transaksi,
+                    'deskripsi' => 'Subsidi dari Kasir',
+                    'amount_transaksi' => $this->input->post('subsidi_transaksi') != '' ? $this->input->post('subsidi_transaksi') : 0,
+                    'dc' => 'c'
                 );
             }
-            $this->data['obat_option_js'] = json_encode($obat_opt_js);
+            $data_trans_d[] = array(
+                // 'id_transaksi' => $id_transaksi,
+                'no_transaksi' => $no_transaksi,
+                'deskripsi' => 'Pembayaran Biaya Medis',
+                'amount_transaksi' => $this->input->post('total_pembayaran'),
+                'dc' => 'c'
+            );
+
+
+            for ($i = 0; $i < count($data_trans_d); $i++) {
+                $this->Transaksi_model->insert_d($data_trans_d[$i]);
+            }
+            // redirect('pembayaran/bayar_obat/'.$id_last->id_transaksi);
             
-            $this->data['obat'] = $this->get_all_obat();    
-            
+            redirect(site_url('pembayaran/cetak_struk_jual/' . $no_transaksi));
+        } else {
+            return $this->jual_obat();
         }
         
-        $this->template->load('template','apotek/jual_obat', $this->data);
     }
+
     private function jurnal_otomatis($id, $total, $diskon, $total_beli, $no_transaksi){
         $akun=$this->getIdAkun($id);
         $id_akun=$akun->id_akun;
