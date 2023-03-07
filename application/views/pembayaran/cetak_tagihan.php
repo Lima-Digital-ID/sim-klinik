@@ -209,13 +209,37 @@
                   } ?>
                 </td>
                 <td class="tg-0lax">
-                  1
+                <?php  
+                    if($loop->deskripsi == 'Biaya Tindakan'){
+                      foreach ($tindakan as $t) { ?>
+                      <br>
+                      <?= '1' ?>
+                      <?php } 
+                    }else if($loop->deskripsi == 'Total Obat-obatan'){
+                      foreach ($obat as $o) { ?>
+                        <br>
+                        <?= $o->jumlah ?>
+                      <?php }
+                    } else { echo '1'; }?>
                 </td>
                 <td class="tg-0lax">
-                  Rp.<?php echo $loop->dc == 'd' ? number_format($loop->amount_transaksi, 2, ',', '.') : ($loop->amount_transaksi != 0 ? '-' . number_format($loop->amount_transaksi, 2, ',', '.') : number_format(0, 2, ',', '.')); ?>
+                  <?php
+                  if($loop->deskripsi == 'Biaya Tindakan'){
+                      foreach ($tindakan as $t) { ?>
+                      <br>
+                      Rp. <?= number_format($t->biaya, 2, ',', '.') ?>
+                      <?php } 
+                    }else if($loop->deskripsi == 'Total Obat-obatan'){
+                      foreach ($obat as $o) { ?>
+                        <br>
+                        Rp. <?= number_format($o->jumlah * $o->harga, 2, ',', '.') ?>
+                      <?php }
+                    } else { ?>
+                      Rp.<?php echo $loop->dc == 'd' ? number_format($loop->amount_transaksi, 2, ',', '.') : ($loop->amount_transaksi != 0 ? '-' . number_format($loop->amount_transaksi, 2, ',', '.') : number_format(0, 2, ',', '.')); ?> 
+                    <?php }?>
                 </td>
                 <td class="tg-0lax"></td>
-                <td class="tg-0lax">
+                <td class="tg-0lax" style="vertical-align: bottom;">
                   Rp.<?php echo $loop->dc == 'd' ? number_format($loop->amount_transaksi, 2, ',', '.') : ($loop->amount_transaksi != 0 ? '-' . number_format($loop->amount_transaksi, 2, ',', '.') : number_format(0, 2, ',', '.')); ?>
                 </td>
               </tr>

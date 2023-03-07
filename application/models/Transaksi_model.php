@@ -532,7 +532,7 @@ class Transaksi_model extends CI_Model
 
     function obatObatan($id)
     {
-        $this->db->select('tbl_periksa_d_obat.no_periksa, tbl_obat_alkes_bhp.nama_barang, tbl_obat_alkes_bhp.harga');
+        $this->db->select('tbl_periksa_d_obat.no_periksa, tbl_periksa_d_obat.jumlah, tbl_obat_alkes_bhp.nama_barang, tbl_obat_alkes_bhp.harga');
         $this->db->from('tbl_periksa_d_obat');
         $this->db->join('tbl_obat_alkes_bhp','tbl_obat_alkes_bhp.kode_barang = tbl_periksa_d_obat.kode_barang');
         $this->db->where('tbl_periksa_d_obat.no_periksa', $id);
